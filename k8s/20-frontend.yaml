@@ -1,0 +1,65 @@
+# Chores frontend (Next.js standalone)
+# Note: this file is processed by envsubst in deploy.sh — ${VAR} placeholders
+# are filled from .env before being piped to kubectl apply.
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chores-frontend
+  namespace: ${NAMESPACE}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chores-frontend
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: chores-frontend
+    spec:
+      containers:
+        - name: frontend
+          image: ${FRONTEND_IMAGE}:${FRONTEND_TAG}
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 3000
+              name: http
+          startupProbe:
+            httpGet: { path: /login, port: 3000 }
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 30
+          readinessProbe:
+            httpGet: { path: /login, port: 3000 }
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 5
+          livenessProbe:
+            httpGet: { path: /login, port: 3000 }
+            periodSeconds: 60
+            timeoutSeconds: 5
+            failureThreshold: 5
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "50m"
+            limits:
+              memory: "512Mi"
+              cpu: "1000m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: chores-frontend
+  namespace: ${NAMESPACE}
+spec:
+  type: ClusterIP
+  selector:
+    app: chores-frontend
+  ports:
+    - port: 3000
+      targetPort: http
+      name: http

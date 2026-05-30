@@ -1,0 +1,99 @@
+# Chores backend (Spring Boot)
+# Note: this file is processed by envsubst in deploy.sh — ${VAR} placeholders
+# are filled from .env before being piped to kubectl apply.
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: chores-backend-secret
+  namespace: ${NAMESPACE}
+type: Opaque
+stringData:
+  # 256-bit base64 secret — rotate via: openssl rand -base64 32
+  CHORES_JWT_SECRET: "${CHORES_JWT_SECRET}"
+  CHORES_ADMIN_USERNAME: "${CHORES_ADMIN_USERNAME}"
+  CHORES_ADMIN_PASSWORD: "${CHORES_ADMIN_PASSWORD}"
+  CHORES_ADMIN_DISPLAY_NAME: "${CHORES_ADMIN_DISPLAY_NAME}"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chores-backend
+  namespace: ${NAMESPACE}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chores-backend
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: chores-backend
+    spec:
+      containers:
+        - name: backend
+          image: ${BACKEND_IMAGE}:${BACKEND_TAG}
+          imagePullPolicy: Never  # local image (OrbStack shares Mac docker images)
+          ports:
+            - containerPort: 8080
+              name: http
+          env:
+            # Uses the shared Postgres in the cluster (see docs/homelab-k8s-setup/apps/shared-postgres/).
+            # Creds are pre-provisioned in shared-postgres-secret under the KIDSTASKS_* keys.
+            - name: DB_HOST
+              value: shared-postgres.${NAMESPACE}.svc.cluster.local
+            - name: DB_PORT
+              value: "5432"
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef: { name: shared-postgres-secret, key: KIDSTASKS_DB }
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef: { name: shared-postgres-secret, key: KIDSTASKS_USER }
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef: { name: shared-postgres-secret, key: KIDSTASKS_PASSWORD }
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://$(DB_HOST):$(DB_PORT)/$(DB_NAME)
+          envFrom:
+            - secretRef:
+                name: chores-backend-secret
+          startupProbe:
+            httpGet: { path: /actuator/health/liveness, port: 8080 }
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 30
+          readinessProbe:
+            httpGet: { path: /actuator/health/readiness, port: 8080 }
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 5
+          livenessProbe:
+            httpGet: { path: /actuator/health/liveness, port: 8080 }
+            periodSeconds: 60
+            timeoutSeconds: 5
+            failureThreshold: 5
+          resources:
+            requests:
+              memory: "384Mi"
+              cpu: "100m"
+            limits:
+              memory: "1Gi"
+              cpu: "1500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: chores-backend
+  namespace: ${NAMESPACE}
+spec:
+  type: ClusterIP
+  selector:
+    app: chores-backend
+  ports:
+    - port: 8080
+      targetPort: http
+      name: http

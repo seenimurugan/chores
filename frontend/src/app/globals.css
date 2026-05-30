@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light dark;
+}
+
+html, body { height: 100%; }
+body {
+  @apply bg-slate-50 text-slate-900 antialiased;
+}
+@media (prefers-color-scheme: dark) {
+  body { @apply bg-slate-950 text-slate-100; }
+}
+
+/* Big, finger-friendly checkboxes for kids */
+.kid-check {
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 0.75rem;
+  border: 2px solid #cbd5e1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  transition: background 120ms ease, border-color 120ms ease, transform 120ms ease;
+}
+.kid-check.done {
+  background: #22c55e;
+  border-color: #16a34a;
+  color: white;
+}
+.kid-check.notdone {
+  background: white;
+  color: #475569;
+}
+.kid-check:active { transform: scale(0.94); }

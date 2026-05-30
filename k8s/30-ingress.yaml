@@ -1,0 +1,42 @@
+# Tailscale ingress with path routing:
+#   /api/* and /actuator/* -> backend
+#   /            (everything else) -> frontend
+# Access:  https://chores.stoat-perch.ts.net
+# Note: this file is processed by envsubst in deploy.sh — ${VAR} placeholders
+# are filled from .env before being piped to kubectl apply.
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: chores
+  namespace: ${NAMESPACE}
+spec:
+  ingressClassName: tailscale
+  rules:
+    - host: chores
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: chores-backend
+                port:
+                  number: 8080
+          - path: /actuator
+            pathType: Prefix
+            backend:
+              service:
+                name: chores-backend
+                port:
+                  number: 8080
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: chores-frontend
+                port:
+                  number: 3000
+  tls:
+    - hosts:
+        - chores
