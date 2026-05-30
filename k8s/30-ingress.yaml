@@ -36,7 +36,7 @@ spec:
               service:
                 name: chores-frontend
                 port:
-                  number: 3000
+                  number: 80
   tls:
     - hosts:
         - chores
