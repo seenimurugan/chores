@@ -30,7 +30,7 @@ So you can hit the same hostname from a browser and from `curl` and they "just w
 ## 1. First login (once)
 
 1. Open https://chores.stoat-perch.ts.net.
-2. Sign in: username `admin`, password `changeme`.
+2. Sign in: username `admin`, password `admin`.
 3. **Change the password immediately** — see [Maintenance → Rotate admin password](MAINTENANCE.md#rotate-admin-password). This is not done from the UI (no "change password" screen for admin); it's a one-command DB update.
 
 ## 2. Add a kid
@@ -113,13 +113,27 @@ The backend enforces this limit — an out-of-window check attempt returns HTTP 
 Open the URL Mum/Dad gave you. Type your username and password. You'll stay signed in for 30 days.
 
 ## Today's chores
-The home screen shows your chores for today, each as a card with a big square button on the left:
+The home screen shows your chores for the selected date, each as a card with a big square button on the left:
 
 - The button shows **✗** (white) when you haven't done the chore yet.
 - Tap it to mark the chore done — the button turns green with a **✓**.
 - Tap again to undo (in case you tapped the wrong one).
 
-The counter at the top right shows `done / total` for today.
+The counter at the top right shows `done / total` for the selected date.
+
+## Viewing and editing past days
+
+Below the "Today's chores" heading you'll see a date navigator:
+
+```
+‹   Saturday, 31 May   ›
+```
+
+- Tap **‹** to go back one day; tap **›** to go forward.
+- The **›** button is greyed out on today (you can't navigate to the future).
+- The **‹** button is greyed out once you reach the earliest day you're allowed to edit (set by Mum or Dad in Settings — default is 14 days back).
+- You can tick or un-tick chores on any day within your edit window — the changes save immediately.
+- Outside the edit window the checkboxes are shown but are disabled (greyed out) so you can still see what you did that day.
 
 ## My stats
 Top nav → **My stats**. The bar chart shows how many chores you ticked off on each of the last 7, 14, or 30 days (use the dropdown to switch).
