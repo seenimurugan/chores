@@ -31,6 +31,8 @@
                                      └────────────────────────────────┘
 ```
 
+**On this page:** [Why path-routed Ingress (not subdomain split)](#why-path-routed-ingress-not-subdomain-split) · [Auth](#auth) · [Data model](#data-model) · [Frontend structure](#frontend-structure) · [Backend structure](#backend-structure) · [Deployment shape](#deployment-shape) · [Why these choices](#why-these-choices)
+
 ## Why path-routed Ingress (not subdomain split)
 
 Single hostname is simpler:

@@ -4,6 +4,8 @@ How to actually use the app, day-to-day. Two roles: **admin** (parent) and **kid
 
 URL: **https://chores.stoat-perch.ts.net** — works on phone Safari, no app to install.
 
+**On this page:** [Access — every URL that hits this app](#access--every-url-that-hits-this-app) · [1. First login (once)](#1-first-login-once) · [2. Add a kid](#2-add-a-kid) · [3. Create a chore](#3-create-a-chore) · [4. Assign a chore to one or more kids](#4-assign-a-chore-to-one-or-more-kids) · [5. Deactivate vs. delete a chore](#5-deactivate-vs-delete-a-chore) · [6. Watch the graphs](#6-watch-the-graphs) · [4. Settings — per-kid edit window](#4-settings--per-kid-edit-window) · [Sign in](#sign-in) · [Today's chores](#todays-chores) · [Viewing and editing past days](#viewing-and-editing-past-days) · [My stats](#my-stats) · [Tips](#tips)
+
 ---
 
 ## Access — every URL that hits this app
