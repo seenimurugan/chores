@@ -85,6 +85,26 @@ A chore appears on a kid's **Today** list only while assigned. Unassign to hide 
 
 Switch the time window with the dropdown (top right).
 
+## 4. Settings — per-kid edit window
+
+Top nav → **Settings**.
+
+Each kid can be given a configurable *edit window* — how many past days they are allowed to tick or un-tick chores. The default is **14 days** (today + 14 previous days).
+
+| Value | Effect |
+|---|---|
+| `0` | Kid can only edit **today**. |
+| `14` (default) | Kid can edit today plus the 14 previous days. |
+| `365` | Maximum — roughly one year back. |
+
+**To change a kid's window:**
+1. Top nav → **Settings**.
+2. Find the kid by name.
+3. Type the new number of days in the input box.
+4. Click **Save**. The response shows "Saved ✓" briefly.
+
+The backend enforces this limit — an out-of-window check attempt returns HTTP 400. The change takes effect immediately with no restart needed.
+
 ---
 
 # Kid guide (give this section to your kids)
