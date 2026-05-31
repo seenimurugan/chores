@@ -103,6 +103,13 @@ public class TaskService {
         if (!assignments.existsByTaskIdAndUserId(taskId, userId)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Task is not assigned to you");
         }
+        User kid = users.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        long daysAgo = java.time.temporal.ChronoUnit.DAYS.between(date, LocalDate.now());
+        if (daysAgo < 0 || daysAgo > kid.getEditWindowDays()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Date " + date + " is outside your edit window (" + kid.getEditWindowDays() + " days)");
+        }
         TaskCompletion c = completions.findByTaskIdAndUserIdAndCompletionDate(taskId, userId, date)
                 .orElseGet(() -> {
                     TaskCompletion nc = new TaskCompletion();
