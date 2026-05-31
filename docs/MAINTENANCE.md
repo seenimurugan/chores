@@ -2,6 +2,8 @@
 
 Operational runbook. Everything lives in the `homelab` namespace.
 
+**On this page:** [Quick reference](#quick-reference) · [Cluster topology](#cluster-topology) · [Framework & versions](#framework--versions) · [Quick health checks](#quick-health-checks) · [Postgres access](#postgres-access) · [Rebuilding after a code change](#rebuilding-after-a-code-change) · [Rotate admin password](#rotate-admin-password) · [Rotate the JWT signing secret](#rotate-the-jwt-signing-secret) · [Backups](#backups) · [Logs](#logs) · [Troubleshooting](#troubleshooting) · [Updates](#updates) · [File reference](#file-reference)
+
 ---
 
 ## Quick reference
