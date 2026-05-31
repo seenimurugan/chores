@@ -4,249 +4,6 @@
   "graph": {},
   "nodes": [
     {
-      "label": "ARCHITECTURE.md",
-      "file_type": "document",
-      "source_file": "docs/ARCHITECTURE.md",
-      "source_location": "L1",
-      "id": "docs_architecture_md",
-      "community": 13,
-      "norm_label": "architecture.md"
-    },
-    {
-      "label": "Chores \u2014 Architecture",
-      "file_type": "document",
-      "source_file": "docs/ARCHITECTURE.md",
-      "source_location": "L1",
-      "id": "docs_architecture_chores_architecture",
-      "community": 13,
-      "norm_label": "chores \u2014 architecture"
-    },
-    {
-      "label": "Why path-routed Ingress (not subdomain split)",
-      "file_type": "document",
-      "source_file": "docs/ARCHITECTURE.md",
-      "source_location": "L34",
-      "id": "docs_architecture_why_path_routed_ingress_not_subdomain_split",
-      "community": 13,
-      "norm_label": "why path-routed ingress (not subdomain split)"
-    },
-    {
-      "label": "Auth",
-      "file_type": "document",
-      "source_file": "docs/ARCHITECTURE.md",
-      "source_location": "L41",
-      "id": "docs_architecture_auth",
-      "community": 13,
-      "norm_label": "auth"
-    },
-    {
-      "label": "Data model",
-      "file_type": "document",
-      "source_file": "docs/ARCHITECTURE.md",
-      "source_location": "L49",
-      "id": "docs_architecture_data_model",
-      "community": 13,
-      "norm_label": "data model"
-    },
-    {
-      "label": "Frontend structure",
-      "file_type": "document",
-      "source_file": "docs/ARCHITECTURE.md",
-      "source_location": "L66",
-      "id": "docs_architecture_frontend_structure",
-      "community": 13,
-      "norm_label": "frontend structure"
-    },
-    {
-      "label": "Backend structure",
-      "file_type": "document",
-      "source_file": "docs/ARCHITECTURE.md",
-      "source_location": "L90",
-      "id": "docs_architecture_backend_structure",
-      "community": 13,
-      "norm_label": "backend structure"
-    },
-    {
-      "label": "Deployment shape",
-      "file_type": "document",
-      "source_file": "docs/ARCHITECTURE.md",
-      "source_location": "L105",
-      "id": "docs_architecture_deployment_shape",
-      "community": 13,
-      "norm_label": "deployment shape"
-    },
-    {
-      "label": "Why these choices",
-      "file_type": "document",
-      "source_file": "docs/ARCHITECTURE.md",
-      "source_location": "L117",
-      "id": "docs_architecture_why_these_choices",
-      "community": 13,
-      "norm_label": "why these choices"
-    },
-    {
-      "label": "USER-MANUAL.md",
-      "file_type": "document",
-      "source_file": "docs/USER-MANUAL.md",
-      "source_location": "L1",
-      "id": "docs_user_manual_md",
-      "community": 11,
-      "norm_label": "user-manual.md"
-    },
-    {
-      "label": "Chores \u2014 usage guide",
-      "file_type": "document",
-      "source_file": "docs/USER-MANUAL.md",
-      "source_location": "L1",
-      "id": "docs_user_manual_chores_usage_guide",
-      "community": 11,
-      "norm_label": "chores \u2014 usage guide"
-    },
-    {
-      "label": "Access \u2014 every URL that hits this app",
-      "file_type": "document",
-      "source_file": "docs/USER-MANUAL.md",
-      "source_location": "L9",
-      "id": "docs_user_manual_access_every_url_that_hits_this_app",
-      "community": 11,
-      "norm_label": "access \u2014 every url that hits this app"
-    },
-    {
-      "label": "Admin guide",
-      "file_type": "document",
-      "source_file": "docs/USER-MANUAL.md",
-      "source_location": "L28",
-      "id": "docs_user_manual_admin_guide",
-      "community": 11,
-      "norm_label": "admin guide"
-    },
-    {
-      "label": "1. First login (once)",
-      "file_type": "document",
-      "source_file": "docs/USER-MANUAL.md",
-      "source_location": "L30",
-      "id": "docs_user_manual_1_first_login_once",
-      "community": 11,
-      "norm_label": "1. first login (once)"
-    },
-    {
-      "label": "2. Add a kid",
-      "file_type": "document",
-      "source_file": "docs/USER-MANUAL.md",
-      "source_location": "L36",
-      "id": "docs_user_manual_2_add_a_kid",
-      "community": 11,
-      "norm_label": "2. add a kid"
-    },
-    {
-      "label": "Reset a kid's password",
-      "file_type": "document",
-      "source_file": "docs/USER-MANUAL.md",
-      "source_location": "L49",
-      "id": "docs_user_manual_reset_a_kid_s_password",
-      "community": 11,
-      "norm_label": "reset a kid's password"
-    },
-    {
-      "label": "Delete a kid",
-      "file_type": "document",
-      "source_file": "docs/USER-MANUAL.md",
-      "source_location": "L52",
-      "id": "docs_user_manual_delete_a_kid",
-      "community": 11,
-      "norm_label": "delete a kid"
-    },
-    {
-      "label": "3. Create a chore",
-      "file_type": "document",
-      "source_file": "docs/USER-MANUAL.md",
-      "source_location": "L55",
-      "id": "docs_user_manual_3_create_a_chore",
-      "community": 11,
-      "norm_label": "3. create a chore"
-    },
-    {
-      "label": "4. Assign a chore to one or more kids",
-      "file_type": "document",
-      "source_file": "docs/USER-MANUAL.md",
-      "source_location": "L66",
-      "id": "docs_user_manual_4_assign_a_chore_to_one_or_more_kids",
-      "community": 11,
-      "norm_label": "4. assign a chore to one or more kids"
-    },
-    {
-      "label": "5. Deactivate vs. delete a chore",
-      "file_type": "document",
-      "source_file": "docs/USER-MANUAL.md",
-      "source_location": "L74",
-      "id": "docs_user_manual_5_deactivate_vs_delete_a_chore",
-      "community": 11,
-      "norm_label": "5. deactivate vs. delete a chore"
-    },
-    {
-      "label": "6. Watch the graphs",
-      "file_type": "document",
-      "source_file": "docs/USER-MANUAL.md",
-      "source_location": "L79",
-      "id": "docs_user_manual_6_watch_the_graphs",
-      "community": 11,
-      "norm_label": "6. watch the graphs"
-    },
-    {
-      "label": "4. Settings \u2014 per-kid edit window",
-      "file_type": "document",
-      "source_file": "docs/USER-MANUAL.md",
-      "source_location": "L88",
-      "id": "docs_user_manual_4_settings_per_kid_edit_window",
-      "community": 11,
-      "norm_label": "4. settings \u2014 per-kid edit window"
-    },
-    {
-      "label": "Kid guide (give this section to your kids)",
-      "file_type": "document",
-      "source_file": "docs/USER-MANUAL.md",
-      "source_location": "L110",
-      "id": "docs_user_manual_kid_guide_give_this_section_to_your_kids",
-      "community": 11,
-      "norm_label": "kid guide (give this section to your kids)"
-    },
-    {
-      "label": "Sign in",
-      "file_type": "document",
-      "source_file": "docs/USER-MANUAL.md",
-      "source_location": "L112",
-      "id": "docs_user_manual_sign_in",
-      "community": 11,
-      "norm_label": "sign in"
-    },
-    {
-      "label": "Today's chores",
-      "file_type": "document",
-      "source_file": "docs/USER-MANUAL.md",
-      "source_location": "L115",
-      "id": "docs_user_manual_today_s_chores",
-      "community": 11,
-      "norm_label": "today's chores"
-    },
-    {
-      "label": "My stats",
-      "file_type": "document",
-      "source_file": "docs/USER-MANUAL.md",
-      "source_location": "L124",
-      "id": "docs_user_manual_my_stats",
-      "community": 11,
-      "norm_label": "my stats"
-    },
-    {
-      "label": "Tips",
-      "file_type": "document",
-      "source_file": "docs/USER-MANUAL.md",
-      "source_location": "L133",
-      "id": "docs_user_manual_tips",
-      "community": 11,
-      "norm_label": "tips"
-    },
-    {
       "label": "settings.json",
       "file_type": "code",
       "source_file": ".claude/settings.json",
@@ -3790,7 +3547,7 @@
       "file_type": "code",
       "source_file": "backend/src/main/java/com/nila/chores/task/AdminTaskController.java",
       "source_location": "L85",
-      "community": 1,
+      "community": 9,
       "norm_label": "of()",
       "id": "task_admintaskcontroller_of"
     },
@@ -3799,7 +3556,7 @@
       "file_type": "code",
       "source_file": "backend/src/main/java/com/nila/chores/task/AdminTaskController.java",
       "source_location": "L85",
-      "community": 1,
+      "community": 9,
       "norm_label": "task",
       "id": "backend_src_main_java_com_nila_chores_task_admintaskcontroller_java_task"
     },
@@ -4060,7 +3817,7 @@
       "file_type": "code",
       "source_file": "backend/src/main/java/com/nila/chores/task/KidTaskController.java",
       "source_location": "L15",
-      "community": 15,
+      "community": 1,
       "norm_label": "kidtaskcontroller",
       "id": "task_kidtaskcontroller_kidtaskcontroller"
     },
@@ -4069,7 +3826,7 @@
       "file_type": "code",
       "source_file": "backend/src/main/java/com/nila/chores/task/KidTaskController.java",
       "source_location": "L21",
-      "community": 15,
+      "community": 1,
       "norm_label": "taskservice",
       "id": "backend_src_main_java_com_nila_chores_task_kidtaskcontroller_java_taskservice"
     },
@@ -4078,7 +3835,7 @@
       "file_type": "code",
       "source_file": "backend/src/main/java/com/nila/chores/task/KidTaskController.java",
       "source_location": "L25",
-      "community": 15,
+      "community": 1,
       "norm_label": ".mytasks()",
       "id": "task_kidtaskcontroller_kidtaskcontroller_mytasks"
     },
@@ -4087,7 +3844,7 @@
       "file_type": "code",
       "source_file": "backend/src/main/java/com/nila/chores/task/KidTaskController.java",
       "source_location": "L25",
-      "community": 15,
+      "community": 1,
       "norm_label": "authuser",
       "id": "backend_src_main_java_com_nila_chores_task_kidtaskcontroller_java_authuser"
     },
@@ -4096,7 +3853,7 @@
       "file_type": "code",
       "source_file": "backend/src/main/java/com/nila/chores/task/KidTaskController.java",
       "source_location": "L25",
-      "community": 15,
+      "community": 1,
       "norm_label": "localdate",
       "id": "backend_src_main_java_com_nila_chores_task_kidtaskcontroller_java_localdate"
     },
@@ -4105,7 +3862,7 @@
       "file_type": "code",
       "source_file": "backend/src/main/java/com/nila/chores/task/KidTaskController.java",
       "source_location": "L25",
-      "community": 15,
+      "community": 1,
       "norm_label": "list",
       "id": "backend_src_main_java_com_nila_chores_task_kidtaskcontroller_java_list"
     },
@@ -4114,7 +3871,7 @@
       "file_type": "code",
       "source_file": "backend/src/main/java/com/nila/chores/task/KidTaskController.java",
       "source_location": "L25",
-      "community": 15,
+      "community": 1,
       "norm_label": "mytaskdto",
       "id": "mytaskdto"
     },
@@ -4123,7 +3880,7 @@
       "file_type": "code",
       "source_file": "backend/src/main/java/com/nila/chores/task/KidTaskController.java",
       "source_location": "L25",
-      "community": 15,
+      "community": 1,
       "norm_label": "getmapping",
       "id": "backend_src_main_java_com_nila_chores_task_kidtaskcontroller_java_getmapping"
     },
@@ -4132,7 +3889,7 @@
       "file_type": "code",
       "source_file": "backend/src/main/java/com/nila/chores/task/KidTaskController.java",
       "source_location": "L49",
-      "community": 15,
+      "community": 1,
       "norm_label": ".check()",
       "id": "task_kidtaskcontroller_kidtaskcontroller_check"
     },
@@ -4141,7 +3898,7 @@
       "file_type": "code",
       "source_file": "backend/src/main/java/com/nila/chores/task/KidTaskController.java",
       "source_location": "L49",
-      "community": 15,
+      "community": 1,
       "norm_label": "long",
       "id": "backend_src_main_java_com_nila_chores_task_kidtaskcontroller_java_long"
     },
@@ -4150,7 +3907,7 @@
       "file_type": "code",
       "source_file": "backend/src/main/java/com/nila/chores/task/KidTaskController.java",
       "source_location": "L49",
-      "community": 15,
+      "community": 1,
       "norm_label": "checkrequest",
       "id": "checkrequest"
     },
@@ -4159,7 +3916,7 @@
       "file_type": "code",
       "source_file": "backend/src/main/java/com/nila/chores/task/KidTaskController.java",
       "source_location": "L49",
-      "community": 15,
+      "community": 1,
       "norm_label": "responseentity",
       "id": "backend_src_main_java_com_nila_chores_task_kidtaskcontroller_java_responseentity"
     },
@@ -4168,7 +3925,7 @@
       "file_type": "code",
       "source_file": "backend/src/main/java/com/nila/chores/task/KidTaskController.java",
       "source_location": "L49",
-      "community": 15,
+      "community": 1,
       "norm_label": "void",
       "id": "backend_src_main_java_com_nila_chores_task_kidtaskcontroller_java_void"
     },
@@ -4177,7 +3934,7 @@
       "file_type": "code",
       "source_file": "backend/src/main/java/com/nila/chores/task/KidTaskController.java",
       "source_location": "L49",
-      "community": 15,
+      "community": 1,
       "norm_label": "postmapping",
       "id": "backend_src_main_java_com_nila_chores_task_kidtaskcontroller_java_postmapping"
     },
@@ -4240,7 +3997,7 @@
       "file_type": "code",
       "source_file": "backend/src/main/java/com/nila/chores/stats/StatsService.java",
       "source_location": "L29",
-      "community": 5,
+      "community": 1,
       "norm_label": "long",
       "id": "backend_src_main_java_com_nila_chores_stats_statsservice_java_long"
     },
@@ -4515,6 +4272,231 @@
       "id": "chores_readme_docs"
     },
     {
+      "label": "ARCHITECTURE.md",
+      "file_type": "document",
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "L1",
+      "community": 13,
+      "norm_label": "architecture.md",
+      "id": "docs_architecture_md"
+    },
+    {
+      "label": "Why path-routed Ingress (not subdomain split)",
+      "file_type": "document",
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "L34",
+      "community": 13,
+      "norm_label": "why path-routed ingress (not subdomain split)",
+      "id": "docs_architecture_why_path_routed_ingress_not_subdomain_split"
+    },
+    {
+      "label": "Auth",
+      "file_type": "document",
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "L41",
+      "community": 13,
+      "norm_label": "auth",
+      "id": "docs_architecture_auth"
+    },
+    {
+      "label": "Data model",
+      "file_type": "document",
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "L49",
+      "community": 13,
+      "norm_label": "data model",
+      "id": "docs_architecture_data_model"
+    },
+    {
+      "label": "Frontend structure",
+      "file_type": "document",
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "L63",
+      "community": 13,
+      "norm_label": "frontend structure",
+      "id": "docs_architecture_frontend_structure"
+    },
+    {
+      "label": "Backend structure",
+      "file_type": "document",
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "L86",
+      "community": 13,
+      "norm_label": "backend structure",
+      "id": "docs_architecture_backend_structure"
+    },
+    {
+      "label": "Deployment shape",
+      "file_type": "document",
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "L101",
+      "community": 13,
+      "norm_label": "deployment shape",
+      "id": "docs_architecture_deployment_shape"
+    },
+    {
+      "label": "Why these choices",
+      "file_type": "document",
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "L113",
+      "community": 13,
+      "norm_label": "why these choices",
+      "id": "docs_architecture_why_these_choices"
+    },
+    {
+      "label": "USER-MANUAL.md",
+      "file_type": "document",
+      "source_file": "docs/USER-MANUAL.md",
+      "source_location": "L1",
+      "community": 11,
+      "norm_label": "user-manual.md",
+      "id": "docs_user_manual_md"
+    },
+    {
+      "label": "Chores \u2014 usage guide",
+      "file_type": "document",
+      "source_file": "docs/USER-MANUAL.md",
+      "source_location": "L1",
+      "community": 11,
+      "norm_label": "chores \u2014 usage guide",
+      "id": "docs_user_manual_chores_usage_guide"
+    },
+    {
+      "label": "Access \u2014 every URL that hits this app",
+      "file_type": "document",
+      "source_file": "docs/USER-MANUAL.md",
+      "source_location": "L9",
+      "community": 11,
+      "norm_label": "access \u2014 every url that hits this app",
+      "id": "docs_user_manual_access_every_url_that_hits_this_app"
+    },
+    {
+      "label": "Admin guide",
+      "file_type": "document",
+      "source_file": "docs/USER-MANUAL.md",
+      "source_location": "L28",
+      "community": 11,
+      "norm_label": "admin guide",
+      "id": "docs_user_manual_admin_guide"
+    },
+    {
+      "label": "1. First login (once)",
+      "file_type": "document",
+      "source_file": "docs/USER-MANUAL.md",
+      "source_location": "L30",
+      "community": 11,
+      "norm_label": "1. first login (once)",
+      "id": "docs_user_manual_1_first_login_once"
+    },
+    {
+      "label": "2. Add a kid",
+      "file_type": "document",
+      "source_file": "docs/USER-MANUAL.md",
+      "source_location": "L36",
+      "community": 11,
+      "norm_label": "2. add a kid",
+      "id": "docs_user_manual_2_add_a_kid"
+    },
+    {
+      "label": "Reset a kid's password",
+      "file_type": "document",
+      "source_file": "docs/USER-MANUAL.md",
+      "source_location": "L49",
+      "community": 11,
+      "norm_label": "reset a kid's password",
+      "id": "docs_user_manual_reset_a_kid_s_password"
+    },
+    {
+      "label": "Delete a kid",
+      "file_type": "document",
+      "source_file": "docs/USER-MANUAL.md",
+      "source_location": "L52",
+      "community": 11,
+      "norm_label": "delete a kid",
+      "id": "docs_user_manual_delete_a_kid"
+    },
+    {
+      "label": "3. Create a chore",
+      "file_type": "document",
+      "source_file": "docs/USER-MANUAL.md",
+      "source_location": "L55",
+      "community": 11,
+      "norm_label": "3. create a chore",
+      "id": "docs_user_manual_3_create_a_chore"
+    },
+    {
+      "label": "4. Assign a chore to one or more kids",
+      "file_type": "document",
+      "source_file": "docs/USER-MANUAL.md",
+      "source_location": "L66",
+      "community": 11,
+      "norm_label": "4. assign a chore to one or more kids",
+      "id": "docs_user_manual_4_assign_a_chore_to_one_or_more_kids"
+    },
+    {
+      "label": "5. Deactivate vs. delete a chore",
+      "file_type": "document",
+      "source_file": "docs/USER-MANUAL.md",
+      "source_location": "L74",
+      "community": 11,
+      "norm_label": "5. deactivate vs. delete a chore",
+      "id": "docs_user_manual_5_deactivate_vs_delete_a_chore"
+    },
+    {
+      "label": "6. Watch the graphs",
+      "file_type": "document",
+      "source_file": "docs/USER-MANUAL.md",
+      "source_location": "L79",
+      "community": 11,
+      "norm_label": "6. watch the graphs",
+      "id": "docs_user_manual_6_watch_the_graphs"
+    },
+    {
+      "label": "Kid guide (give this section to your kids)",
+      "file_type": "document",
+      "source_file": "docs/USER-MANUAL.md",
+      "source_location": "L90",
+      "community": 11,
+      "norm_label": "kid guide (give this section to your kids)",
+      "id": "docs_user_manual_kid_guide_give_this_section_to_your_kids"
+    },
+    {
+      "label": "Sign in",
+      "file_type": "document",
+      "source_file": "docs/USER-MANUAL.md",
+      "source_location": "L92",
+      "community": 11,
+      "norm_label": "sign in",
+      "id": "docs_user_manual_sign_in"
+    },
+    {
+      "label": "Today's chores",
+      "file_type": "document",
+      "source_file": "docs/USER-MANUAL.md",
+      "source_location": "L95",
+      "community": 11,
+      "norm_label": "today's chores",
+      "id": "docs_user_manual_today_s_chores"
+    },
+    {
+      "label": "My stats",
+      "file_type": "document",
+      "source_file": "docs/USER-MANUAL.md",
+      "source_location": "L104",
+      "community": 11,
+      "norm_label": "my stats",
+      "id": "docs_user_manual_my_stats"
+    },
+    {
+      "label": "Tips",
+      "file_type": "document",
+      "source_file": "docs/USER-MANUAL.md",
+      "source_location": "L113",
+      "community": 11,
+      "norm_label": "tips",
+      "id": "docs_user_manual_tips"
+    },
+    {
       "label": "README.md",
       "file_type": "document",
       "source_file": "docs/README.md",
@@ -4618,7 +4600,7 @@
       "file_type": "document",
       "source_file": "docs/MAINTENANCE.md",
       "source_location": "L7",
-      "community": 12,
+      "community": 23,
       "norm_label": "quick reference",
       "id": "docs_maintenance_quick_reference"
     },
@@ -4627,7 +4609,7 @@
       "file_type": "document",
       "source_file": "docs/MAINTENANCE.md",
       "source_location": "L11",
-      "community": 12,
+      "community": 23,
       "norm_label": "source code on this mac",
       "id": "docs_maintenance_source_code_on_this_mac"
     },
@@ -4636,7 +4618,7 @@
       "file_type": "document",
       "source_file": "docs/MAINTENANCE.md",
       "source_location": "L23",
-      "community": 12,
+      "community": 23,
       "norm_label": "live in the cluster",
       "id": "docs_maintenance_live_in_the_cluster"
     },
@@ -4645,7 +4627,7 @@
       "file_type": "document",
       "source_file": "docs/MAINTENANCE.md",
       "source_location": "L34",
-      "community": 12,
+      "community": 23,
       "norm_label": "database (uses cluster's shared postgres \u2014 chores does not run its own)",
       "id": "docs_maintenance_database_uses_cluster_s_shared_postgres_chores_does_not_run_its_own"
     },
@@ -4654,7 +4636,7 @@
       "file_type": "document",
       "source_file": "docs/MAINTENANCE.md",
       "source_location": "L48",
-      "community": 12,
+      "community": 23,
       "norm_label": "other secrets",
       "id": "docs_maintenance_other_secrets"
     },
@@ -4663,7 +4645,7 @@
       "file_type": "document",
       "source_file": "docs/MAINTENANCE.md",
       "source_location": "L55",
-      "community": 12,
+      "community": 23,
       "norm_label": "one-liners worth memorising",
       "id": "docs_maintenance_one_liners_worth_memorising"
     },
@@ -4699,7 +4681,7 @@
       "file_type": "document",
       "source_file": "docs/MAINTENANCE.md",
       "source_location": "L153",
-      "community": 12,
+      "community": 21,
       "norm_label": "postgres access",
       "id": "docs_maintenance_postgres_access"
     },
@@ -4708,7 +4690,7 @@
       "file_type": "document",
       "source_file": "docs/MAINTENANCE.md",
       "source_location": "L157",
-      "community": 12,
+      "community": 21,
       "norm_label": "address (cluster-internal)",
       "id": "docs_maintenance_address_cluster_internal"
     },
@@ -4717,7 +4699,7 @@
       "file_type": "document",
       "source_file": "docs/MAINTENANCE.md",
       "source_location": "L178",
-      "community": 12,
+      "community": 21,
       "norm_label": "open a `psql` shell",
       "id": "docs_maintenance_open_a_psql_shell"
     },
@@ -4726,7 +4708,7 @@
       "file_type": "document",
       "source_file": "docs/MAINTENANCE.md",
       "source_location": "L188",
-      "community": 12,
+      "community": 21,
       "norm_label": "see the current password",
       "id": "docs_maintenance_see_the_current_password"
     },
@@ -4735,7 +4717,7 @@
       "file_type": "document",
       "source_file": "docs/MAINTENANCE.md",
       "source_location": "L195",
-      "community": 12,
+      "community": 21,
       "norm_label": "connect from a gui (tableplus / dbeaver / pgadmin)",
       "id": "docs_maintenance_connect_from_a_gui_tableplus_dbeaver_pgadmin"
     },
@@ -4744,7 +4726,7 @@
       "file_type": "document",
       "source_file": "docs/MAINTENANCE.md",
       "source_location": "L203",
-      "community": 12,
+      "community": 21,
       "norm_label": "rotate the chores db password",
       "id": "docs_maintenance_rotate_the_chores_db_password"
     },
@@ -4753,7 +4735,7 @@
       "file_type": "document",
       "source_file": "docs/MAINTENANCE.md",
       "source_location": "L215",
-      "community": 12,
+      "community": 21,
       "norm_label": "tables",
       "id": "docs_maintenance_tables"
     },
@@ -4807,7 +4789,7 @@
       "file_type": "document",
       "source_file": "docs/MAINTENANCE.md",
       "source_location": "L326",
-      "community": 12,
+      "community": 15,
       "norm_label": "troubleshooting",
       "id": "docs_maintenance_troubleshooting"
     },
@@ -4816,7 +4798,7 @@
       "file_type": "document",
       "source_file": "docs/MAINTENANCE.md",
       "source_location": "L328",
-      "community": 12,
+      "community": 15,
       "norm_label": "how to verify the backend can actually reach the db",
       "id": "docs_maintenance_how_to_verify_the_backend_can_actually_reach_the_db"
     },
@@ -4825,7 +4807,7 @@
       "file_type": "document",
       "source_file": "docs/MAINTENANCE.md",
       "source_location": "L366",
-      "community": 12,
+      "community": 15,
       "norm_label": "browser shows \"sign in\" but `/api/auth/login` returns 401",
       "id": "docs_maintenance_browser_shows_sign_in_but_api_auth_login_returns_401"
     },
@@ -4834,7 +4816,7 @@
       "file_type": "document",
       "source_file": "docs/MAINTENANCE.md",
       "source_location": "L375",
-      "community": 12,
+      "community": 15,
       "norm_label": "backend pod in `crashloopbackoff`",
       "id": "docs_maintenance_backend_pod_in_crashloopbackoff"
     },
@@ -4843,7 +4825,7 @@
       "file_type": "document",
       "source_file": "docs/MAINTENANCE.md",
       "source_location": "L392",
-      "community": 12,
+      "community": 15,
       "norm_label": "frontend works but every api call 404s",
       "id": "docs_maintenance_frontend_works_but_every_api_call_404s"
     },
@@ -4852,7 +4834,7 @@
       "file_type": "document",
       "source_file": "docs/MAINTENANCE.md",
       "source_location": "L401",
-      "community": 12,
+      "community": 15,
       "norm_label": "tailscale hostname not minted",
       "id": "docs_maintenance_tailscale_hostname_not_minted"
     },
@@ -4861,7 +4843,7 @@
       "file_type": "document",
       "source_file": "docs/MAINTENANCE.md",
       "source_location": "L411",
-      "community": 12,
+      "community": 15,
       "norm_label": "frontend pod `crashloopbackoff` with \"eaddrinuse\" or similar",
       "id": "docs_maintenance_frontend_pod_crashloopbackoff_with_eaddrinuse_or_similar"
     },
@@ -4870,7 +4852,7 @@
       "file_type": "document",
       "source_file": "docs/MAINTENANCE.md",
       "source_location": "L418",
-      "community": 12,
+      "community": 15,
       "norm_label": "\"conversion of type 'number' to type 'string'\" at build time",
       "id": "docs_maintenance_conversion_of_type_number_to_type_string_at_build_time"
     },
@@ -4879,7 +4861,7 @@
       "file_type": "document",
       "source_file": "docs/MAINTENANCE.md",
       "source_location": "L422",
-      "community": 12,
+      "community": 15,
       "norm_label": "reset the whole stack (dev only \u2014 destroys all chores data)",
       "id": "docs_maintenance_reset_the_whole_stack_dev_only_destroys_all_chores_data"
     },
@@ -4910,9 +4892,35 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 12,
-      "norm_label": "chores project readme",
-      "id": "readme_chores"
+      "id": "readme_chores",
+      "community": 41,
+      "norm_label": "chores project readme"
+    },
+    {
+      "label": "Chores Architecture",
+      "file_type": "document",
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "architecture_chores",
+      "community": 13,
+      "norm_label": "chores architecture"
+    },
+    {
+      "label": "Chores User Manual",
+      "file_type": "document",
+      "source_file": "docs/USER-MANUAL.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "user_manual_chores",
+      "community": 41,
+      "norm_label": "chores user manual"
     },
     {
       "label": "Chores Maintenance",
@@ -4923,9 +4931,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
+      "id": "maintenance_chores",
       "community": 12,
-      "norm_label": "chores maintenance",
-      "id": "maintenance_chores"
+      "norm_label": "chores maintenance"
     },
     {
       "label": "Chores Docs README",
@@ -4936,9 +4944,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 12,
-      "norm_label": "chores docs readme",
-      "id": "readme_docs"
+      "id": "readme_docs",
+      "community": 41,
+      "norm_label": "chores docs readme"
     },
     {
       "label": "Backend application.yml",
@@ -4949,9 +4957,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 12,
-      "norm_label": "backend application.yml",
-      "id": "application_yml_backend"
+      "id": "application_yml_backend",
+      "community": 13,
+      "norm_label": "backend application.yml"
     },
     {
       "label": "Backend K8s Deployment",
@@ -4962,9 +4970,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
+      "id": "10_backend_yaml_deployment",
       "community": 12,
-      "norm_label": "backend k8s deployment",
-      "id": "10_backend_yaml_deployment"
+      "norm_label": "backend k8s deployment"
     },
     {
       "label": "Frontend K8s Deployment",
@@ -4975,9 +4983,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
+      "id": "20_frontend_yaml_deployment",
       "community": 12,
-      "norm_label": "frontend k8s deployment",
-      "id": "20_frontend_yaml_deployment"
+      "norm_label": "frontend k8s deployment"
     },
     {
       "label": "Tailscale Ingress",
@@ -4988,262 +4996,64 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
+      "id": "30_ingress_yaml_ingress",
       "community": 12,
-      "norm_label": "tailscale ingress",
-      "id": "30_ingress_yaml_ingress"
+      "norm_label": "tailscale ingress"
+    },
+    {
+      "label": "Shared Postgres Service",
+      "file_type": "concept",
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "concept_shared_postgres",
+      "community": 12,
+      "norm_label": "shared postgres service"
+    },
+    {
+      "label": "JWT Authentication",
+      "file_type": "concept",
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "concept_jwt_auth",
+      "community": 13,
+      "norm_label": "jwt authentication"
+    },
+    {
+      "label": "Per-Kid Edit Window",
+      "file_type": "concept",
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "concept_edit_window",
+      "community": 41,
+      "norm_label": "per-kid edit window"
+    },
+    {
+      "label": "Flyway DB Migration",
+      "file_type": "concept",
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "concept_flyway_migration",
+      "community": 13,
+      "norm_label": "flyway db migration"
     }
   ],
   "links": [
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/ARCHITECTURE.md",
-      "source_location": "L1",
-      "weight": 1.0,
-      "source": "docs_architecture_md",
-      "target": "docs_architecture_chores_architecture",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/ARCHITECTURE.md",
-      "source_location": "L41",
-      "weight": 1.0,
-      "source": "docs_architecture_chores_architecture",
-      "target": "docs_architecture_auth",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/ARCHITECTURE.md",
-      "source_location": "L90",
-      "weight": 1.0,
-      "source": "docs_architecture_chores_architecture",
-      "target": "docs_architecture_backend_structure",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/ARCHITECTURE.md",
-      "source_location": "L49",
-      "weight": 1.0,
-      "source": "docs_architecture_chores_architecture",
-      "target": "docs_architecture_data_model",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/ARCHITECTURE.md",
-      "source_location": "L105",
-      "weight": 1.0,
-      "source": "docs_architecture_chores_architecture",
-      "target": "docs_architecture_deployment_shape",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/ARCHITECTURE.md",
-      "source_location": "L66",
-      "weight": 1.0,
-      "source": "docs_architecture_chores_architecture",
-      "target": "docs_architecture_frontend_structure",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/ARCHITECTURE.md",
-      "source_location": "L34",
-      "weight": 1.0,
-      "source": "docs_architecture_chores_architecture",
-      "target": "docs_architecture_why_path_routed_ingress_not_subdomain_split",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/ARCHITECTURE.md",
-      "source_location": "L117",
-      "weight": 1.0,
-      "source": "docs_architecture_chores_architecture",
-      "target": "docs_architecture_why_these_choices",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/USER-MANUAL.md",
-      "source_location": "L28",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "docs_user_manual_md",
-      "target": "docs_user_manual_admin_guide"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/USER-MANUAL.md",
-      "source_location": "L1",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "docs_user_manual_md",
-      "target": "docs_user_manual_chores_usage_guide"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/USER-MANUAL.md",
-      "source_location": "L90",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "docs_user_manual_md",
-      "target": "docs_user_manual_kid_guide_give_this_section_to_your_kids"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/USER-MANUAL.md",
-      "source_location": "L9",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "docs_user_manual_chores_usage_guide",
-      "target": "docs_user_manual_access_every_url_that_hits_this_app"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/USER-MANUAL.md",
-      "source_location": "L30",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "docs_user_manual_admin_guide",
-      "target": "docs_user_manual_1_first_login_once"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/USER-MANUAL.md",
-      "source_location": "L36",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "docs_user_manual_admin_guide",
-      "target": "docs_user_manual_2_add_a_kid"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/USER-MANUAL.md",
-      "source_location": "L55",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "docs_user_manual_admin_guide",
-      "target": "docs_user_manual_3_create_a_chore"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/USER-MANUAL.md",
-      "source_location": "L66",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "docs_user_manual_admin_guide",
-      "target": "docs_user_manual_4_assign_a_chore_to_one_or_more_kids"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/USER-MANUAL.md",
-      "source_location": "L88",
-      "weight": 1.0,
-      "source": "docs_user_manual_admin_guide",
-      "target": "docs_user_manual_4_settings_per_kid_edit_window",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/USER-MANUAL.md",
-      "source_location": "L74",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "docs_user_manual_admin_guide",
-      "target": "docs_user_manual_5_deactivate_vs_delete_a_chore"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/USER-MANUAL.md",
-      "source_location": "L79",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "docs_user_manual_admin_guide",
-      "target": "docs_user_manual_6_watch_the_graphs"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/USER-MANUAL.md",
-      "source_location": "L52",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "docs_user_manual_2_add_a_kid",
-      "target": "docs_user_manual_delete_a_kid"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/USER-MANUAL.md",
-      "source_location": "L49",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "docs_user_manual_2_add_a_kid",
-      "target": "docs_user_manual_reset_a_kid_s_password"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/USER-MANUAL.md",
-      "source_location": "L104",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "docs_user_manual_kid_guide_give_this_section_to_your_kids",
-      "target": "docs_user_manual_my_stats"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/USER-MANUAL.md",
-      "source_location": "L92",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "docs_user_manual_kid_guide_give_this_section_to_your_kids",
-      "target": "docs_user_manual_sign_in"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/USER-MANUAL.md",
-      "source_location": "L113",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "docs_user_manual_kid_guide_give_this_section_to_your_kids",
-      "target": "docs_user_manual_tips"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/USER-MANUAL.md",
-      "source_location": "L95",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "docs_user_manual_kid_guide_give_this_section_to_your_kids",
-      "target": "docs_user_manual_today_s_chores"
-    },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
@@ -6831,9 +6641,9 @@
       "source_file": "backend/src/main/java/com/nila/chores/task/TaskCompletion.java",
       "source_location": "L9",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "taskcompletion",
-      "target": "localdate"
+      "target": "localdate",
+      "confidence_score": 1.0
     },
     {
       "relation": "references",
@@ -12658,6 +12468,246 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "docs_architecture_md",
+      "target": "architecture_chores"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "L34",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "architecture_chores",
+      "target": "docs_architecture_why_path_routed_ingress_not_subdomain_split"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "L41",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "architecture_chores",
+      "target": "docs_architecture_auth"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "L49",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "architecture_chores",
+      "target": "docs_architecture_data_model"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "L63",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "architecture_chores",
+      "target": "docs_architecture_frontend_structure"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "L86",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "architecture_chores",
+      "target": "docs_architecture_backend_structure"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "L101",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "architecture_chores",
+      "target": "docs_architecture_deployment_shape"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "L113",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "architecture_chores",
+      "target": "docs_architecture_why_these_choices"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/USER-MANUAL.md",
+      "source_location": "L28",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "docs_user_manual_md",
+      "target": "docs_user_manual_admin_guide"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/USER-MANUAL.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "docs_user_manual_md",
+      "target": "docs_user_manual_chores_usage_guide"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/USER-MANUAL.md",
+      "source_location": "L90",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "docs_user_manual_md",
+      "target": "docs_user_manual_kid_guide_give_this_section_to_your_kids"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/USER-MANUAL.md",
+      "source_location": "L9",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "docs_user_manual_chores_usage_guide",
+      "target": "docs_user_manual_access_every_url_that_hits_this_app"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/USER-MANUAL.md",
+      "source_location": "L30",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "docs_user_manual_admin_guide",
+      "target": "docs_user_manual_1_first_login_once"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/USER-MANUAL.md",
+      "source_location": "L36",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "docs_user_manual_admin_guide",
+      "target": "docs_user_manual_2_add_a_kid"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/USER-MANUAL.md",
+      "source_location": "L55",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "docs_user_manual_admin_guide",
+      "target": "docs_user_manual_3_create_a_chore"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/USER-MANUAL.md",
+      "source_location": "L66",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "docs_user_manual_admin_guide",
+      "target": "docs_user_manual_4_assign_a_chore_to_one_or_more_kids"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/USER-MANUAL.md",
+      "source_location": "L74",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "docs_user_manual_admin_guide",
+      "target": "docs_user_manual_5_deactivate_vs_delete_a_chore"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/USER-MANUAL.md",
+      "source_location": "L79",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "docs_user_manual_admin_guide",
+      "target": "docs_user_manual_6_watch_the_graphs"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/USER-MANUAL.md",
+      "source_location": "L52",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "docs_user_manual_2_add_a_kid",
+      "target": "docs_user_manual_delete_a_kid"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/USER-MANUAL.md",
+      "source_location": "L49",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "docs_user_manual_2_add_a_kid",
+      "target": "docs_user_manual_reset_a_kid_s_password"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/USER-MANUAL.md",
+      "source_location": "L104",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "docs_user_manual_kid_guide_give_this_section_to_your_kids",
+      "target": "docs_user_manual_my_stats"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/USER-MANUAL.md",
+      "source_location": "L92",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "docs_user_manual_kid_guide_give_this_section_to_your_kids",
+      "target": "docs_user_manual_sign_in"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/USER-MANUAL.md",
+      "source_location": "L113",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "docs_user_manual_kid_guide_give_this_section_to_your_kids",
+      "target": "docs_user_manual_tips"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/USER-MANUAL.md",
+      "source_location": "L95",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "docs_user_manual_kid_guide_give_this_section_to_your_kids",
+      "target": "docs_user_manual_today_s_chores"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "docs/README.md",
       "source_location": "L1",
       "weight": 1.0,
@@ -13083,6 +13133,16 @@
       "source_location": null,
       "weight": 1.0,
       "source": "readme_chores",
+      "target": "architecture_chores"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "readme_chores",
       "target": "maintenance_chores"
     },
     {
@@ -13094,6 +13154,96 @@
       "weight": 1.0,
       "source": "readme_chores",
       "target": "readme_docs"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "readme_chores",
+      "target": "user_manual_chores"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "architecture_chores",
+      "target": "concept_edit_window"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "architecture_chores",
+      "target": "concept_flyway_migration"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "architecture_chores",
+      "target": "concept_jwt_auth"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "architecture_chores",
+      "target": "concept_shared_postgres"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/README.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "readme_docs",
+      "target": "architecture_chores"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/README.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "readme_docs",
+      "target": "user_manual_chores"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/USER-MANUAL.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "user_manual_chores",
+      "target": "concept_edit_window"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/USER-MANUAL.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "user_manual_chores",
+      "target": "maintenance_chores"
     },
     {
       "relation": "references",
@@ -13129,6 +13279,16 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
+      "source_file": "docs/MAINTENANCE.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "maintenance_chores",
+      "target": "concept_shared_postgres"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
       "source_file": "docs/README.md",
       "source_location": null,
       "weight": 1.0,
@@ -13144,6 +13304,36 @@
       "weight": 1.0,
       "source": "10_backend_yaml_deployment",
       "target": "application_yml_backend"
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/main/resources/application.yml",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "application_yml_backend",
+      "target": "concept_flyway_migration"
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.9,
+      "source_file": "backend/src/main/resources/application.yml",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "application_yml_backend",
+      "target": "concept_jwt_auth"
+    },
+    {
+      "relation": "shares_data_with",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "k8s/10-backend.yaml",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "10_backend_yaml_deployment",
+      "target": "concept_shared_postgres"
     },
     {
       "relation": "references",
@@ -13167,5 +13357,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "f45a1df7a81af51b13e608aa7f5293288bb7d111"
+  "built_at_commit": "a52fdb38dc497dfeca4c936c76d910c05aecb78d"
 }
