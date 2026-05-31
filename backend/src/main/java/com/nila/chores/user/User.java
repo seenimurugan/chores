@@ -31,6 +31,9 @@ public class User {
     @Column(name = "avatar_color", nullable = false)
     private String avatarColor = "#4263eb";
 
+    @Column(name = "edit_window_days", nullable = false)
+    private int editWindowDays = 14;
+
     @Column(name = "created_at", nullable = false, insertable = false, updatable = false)
     private OffsetDateTime createdAt;
 

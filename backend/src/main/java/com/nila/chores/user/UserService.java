@@ -53,6 +53,17 @@ public class UserService {
         users.delete(u);
     }
 
+    @Transactional
+    public User updateEditWindow(Long userId, int editWindowDays) {
+        User u = users.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        if (u.getRole() != User.Role.KID) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Can only update edit window for kid accounts");
+        }
+        u.setEditWindowDays(editWindowDays);
+        return u;
+    }
+
     public User getByUsername(String username) {
         return users.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));

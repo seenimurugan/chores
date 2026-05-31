@@ -49,7 +49,8 @@ Single hostname is simpler:
 ## Data model
 
 ```sql
-app_user(id, username UQ, password_hash, display_name, role ADMIN|KID, avatar_color, created_at)
+app_user(id, username UQ, password_hash, display_name, role ADMIN|KID, avatar_color,
+         edit_window_days INT NOT NULL DEFAULT 14, created_at)
 task(id, title, description, points, icon, recurrence DAILY|WEEKLY|ONCE, active, created_at)
 task_assignment(id, task_id → task, user_id → app_user, UQ(task_id,user_id))
 task_completion(id, task_id → task, user_id → app_user, completion_date, done, completed_at,
@@ -57,6 +58,8 @@ task_completion(id, task_id → task, user_id → app_user, completion_date, don
 ```
 
 Each (task, kid, day) has at most one completion row. The big checkbox toggles `done` between true/false on that row (or creates the row the first time).
+
+`edit_window_days` on `app_user` controls how many past days a kid may tick/untick chores. The service layer in `TaskService.setCompletion` enforces this: requests for dates older than `today - edit_window_days` receive HTTP 400. Admin/parent endpoints are unrestricted. V2 migration adds the column with default 14.
 
 Stats are computed by `StatsService` directly from `task_completion` aggregated by day — no denormalised counters, which keeps writes simple and the kid-count is tiny.
 
@@ -73,7 +76,8 @@ src/
 │  └─ admin/
 │     ├─ page.tsx                # admin dashboard (per-kid cards + line chart)
 │     ├─ users/page.tsx          # CRUD kids
-│     └─ tasks/page.tsx          # CRUD tasks, assign/unassign per kid
+│     ├─ tasks/page.tsx          # CRUD tasks, assign/unassign per kid
+│     └─ settings/page.tsx       # per-kid edit-window configuration
 ├─ components/
 │  ├─ AppShell.tsx               # nav + role guard
 │  └─ StatsChart.tsx             # DailyBars + ComparisonLines

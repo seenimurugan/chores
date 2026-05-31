@@ -1,0 +1,392 @@
+{
+  "/Users/nila/Developer/apps/chores/setup-graph.sh": {
+    "mtime": 1780150726.1072032,
+    "ast_hash": "ed33f5988f87e3dac6e3671aa318c8ec",
+    "semantic_hash": "ed33f5988f87e3dac6e3671aa318c8ec"
+  },
+  "/Users/nila/Developer/apps/chores/.opencode.json": {
+    "mtime": 1780150729.8811855,
+    "ast_hash": "27177966b6d6bf0d0fcd71a73a0be979",
+    "semantic_hash": "27177966b6d6bf0d0fcd71a73a0be979"
+  },
+  "/Users/nila/Developer/apps/chores/undeploy.sh": {
+    "mtime": 1780137446.7825122,
+    "ast_hash": "a5f313ad8ca3d3651054055389a90b26",
+    "semantic_hash": "a5f313ad8ca3d3651054055389a90b26"
+  },
+  "/Users/nila/Developer/apps/chores/.mcp.json": {
+    "mtime": 1780150729.8805873,
+    "ast_hash": "df29da0c725d2646d72b6241eda5ee75",
+    "semantic_hash": "df29da0c725d2646d72b6241eda5ee75"
+  },
+  "/Users/nila/Developer/apps/chores/deploy.sh": {
+    "mtime": 1780137436.223708,
+    "ast_hash": "37086539ecce90fa1e0811ed56a2518a",
+    "semantic_hash": "37086539ecce90fa1e0811ed56a2518a"
+  },
+  "/Users/nila/Developer/apps/chores/.cursor/mcp.json": {
+    "mtime": 1780150729.880919,
+    "ast_hash": "df29da0c725d2646d72b6241eda5ee75",
+    "semantic_hash": "df29da0c725d2646d72b6241eda5ee75"
+  },
+  "/Users/nila/Developer/apps/chores/.gemini/settings.json": {
+    "mtime": 1780150729.8862612,
+    "ast_hash": "1de3ac053575cac64763cc78707d76e7",
+    "semantic_hash": "1de3ac053575cac64763cc78707d76e7"
+  },
+  "/Users/nila/Developer/apps/chores/.gemini/hooks/crg-update.sh": {
+    "mtime": 1780150729.8861709,
+    "ast_hash": "6165bf43458d74a3c27478a251819244",
+    "semantic_hash": "6165bf43458d74a3c27478a251819244"
+  },
+  "/Users/nila/Developer/apps/chores/.gemini/hooks/crg-session-start.sh": {
+    "mtime": 1780150729.8860872,
+    "ast_hash": "fc95bf5931a47578539e1148ab1f8e35",
+    "semantic_hash": "fc95bf5931a47578539e1148ab1f8e35"
+  },
+  "/Users/nila/Developer/apps/chores/.qoder/settings.json": {
+    "mtime": 1780150729.885247,
+    "ast_hash": "e37e9bc5f197f2b39e6c58159450e90b",
+    "semantic_hash": "e37e9bc5f197f2b39e6c58159450e90b"
+  },
+  "/Users/nila/Developer/apps/chores/.qoder/mcp.json": {
+    "mtime": 1780150729.8814845,
+    "ast_hash": "df29da0c725d2646d72b6241eda5ee75",
+    "semantic_hash": "df29da0c725d2646d72b6241eda5ee75"
+  },
+  "/Users/nila/Developer/apps/chores/frontend/next.config.js": {
+    "mtime": 1779876021.561761,
+    "ast_hash": "c750348c2a581694713fa80d043a3df0",
+    "semantic_hash": "c750348c2a581694713fa80d043a3df0"
+  },
+  "/Users/nila/Developer/apps/chores/frontend/next-env.d.ts": {
+    "mtime": 1779862643.3339176,
+    "ast_hash": "8ccf37b0657b4213f1c10db5c78e039a",
+    "semantic_hash": "8ccf37b0657b4213f1c10db5c78e039a"
+  },
+  "/Users/nila/Developer/apps/chores/frontend/tailwind.config.ts": {
+    "mtime": 1779862642.26546,
+    "ast_hash": "b485589f3972ca14bd7a397bb4963ff0",
+    "semantic_hash": "b485589f3972ca14bd7a397bb4963ff0"
+  },
+  "/Users/nila/Developer/apps/chores/frontend/package.json": {
+    "mtime": 1779862632.6780198,
+    "ast_hash": "c0c69131d57a09e0891dda428cc1ea98",
+    "semantic_hash": "c0c69131d57a09e0891dda428cc1ea98"
+  },
+  "/Users/nila/Developer/apps/chores/frontend/tsconfig.json": {
+    "mtime": 1779862636.1726286,
+    "ast_hash": "b3eeab4118e3692334729227456c2555",
+    "semantic_hash": "b3eeab4118e3692334729227456c2555"
+  },
+  "/Users/nila/Developer/apps/chores/frontend/postcss.config.js": {
+    "mtime": 1779862638.6853373,
+    "ast_hash": "8640f9b2e6475cc3f5b1ff4548925765",
+    "semantic_hash": "8640f9b2e6475cc3f5b1ff4548925765"
+  },
+  "/Users/nila/Developer/apps/chores/frontend/src/app/layout.tsx": {
+    "mtime": 1779862669.045335,
+    "ast_hash": "a1a3e840c58d0397cdc58839d801de9b",
+    "semantic_hash": "a1a3e840c58d0397cdc58839d801de9b"
+  },
+  "/Users/nila/Developer/apps/chores/frontend/src/app/page.tsx": {
+    "mtime": 1779862721.3725607,
+    "ast_hash": "02a10f9d21ae560f7f3a35517361c49d",
+    "semantic_hash": "02a10f9d21ae560f7f3a35517361c49d"
+  },
+  "/Users/nila/Developer/apps/chores/frontend/src/app/admin/page.tsx": {
+    "mtime": 1779924036.4508717,
+    "ast_hash": "ec1c5add5a95b214eeebe3a481fea0f8",
+    "semantic_hash": "ec1c5add5a95b214eeebe3a481fea0f8"
+  },
+  "/Users/nila/Developer/apps/chores/frontend/src/app/admin/tasks/page.tsx": {
+    "mtime": 1779887695.939684,
+    "ast_hash": "ae4708bb2c212700f0211fea2bb4a035",
+    "semantic_hash": "ae4708bb2c212700f0211fea2bb4a035"
+  },
+  "/Users/nila/Developer/apps/chores/frontend/src/app/admin/users/page.tsx": {
+    "mtime": 1779862762.6556165,
+    "ast_hash": "94d806fbf86f0474e73ae16f4c1bcf8f",
+    "semantic_hash": "94d806fbf86f0474e73ae16f4c1bcf8f"
+  },
+  "/Users/nila/Developer/apps/chores/frontend/src/app/login/page.tsx": {
+    "mtime": 1779862691.9717472,
+    "ast_hash": "3cf2a9c1533cdddbe354ee6ff95e09ea",
+    "semantic_hash": "3cf2a9c1533cdddbe354ee6ff95e09ea"
+  },
+  "/Users/nila/Developer/apps/chores/frontend/src/app/stats/page.tsx": {
+    "mtime": 1779924006.5431123,
+    "ast_hash": "08b10966e1c74c9658dae5819f5a18a5",
+    "semantic_hash": "08b10966e1c74c9658dae5819f5a18a5"
+  },
+  "/Users/nila/Developer/apps/chores/frontend/src/components/ChoresMatrix.tsx": {
+    "mtime": 1779925689.273601,
+    "ast_hash": "a99fd84f4d0492e98d9d647c7686b493",
+    "semantic_hash": "a99fd84f4d0492e98d9d647c7686b493"
+  },
+  "/Users/nila/Developer/apps/chores/frontend/src/components/AppShell.tsx": {
+    "mtime": 1780234058.5268958,
+    "ast_hash": "3e51bc71fd7b6b88c42ddb030a0a1606",
+    "semantic_hash": "3e51bc71fd7b6b88c42ddb030a0a1606"
+  },
+  "/Users/nila/Developer/apps/chores/frontend/src/components/StatsChart.tsx": {
+    "mtime": 1779863021.9915767,
+    "ast_hash": "9905bc265c7f4d35cfa8bc270fd3c5bb",
+    "semantic_hash": "9905bc265c7f4d35cfa8bc270fd3c5bb"
+  },
+  "/Users/nila/Developer/apps/chores/frontend/src/lib/api.ts": {
+    "mtime": 1780234054.2207177,
+    "ast_hash": "15fac9134b8bae94c4103e2c3a157694",
+    "semantic_hash": "15fac9134b8bae94c4103e2c3a157694"
+  },
+  "/Users/nila/Developer/apps/chores/.claude/settings.json": {
+    "mtime": 1780150729.8851242,
+    "ast_hash": "e37e9bc5f197f2b39e6c58159450e90b",
+    "semantic_hash": "e37e9bc5f197f2b39e6c58159450e90b"
+  },
+  "/Users/nila/Developer/apps/chores/backend/src/main/resources/db/migration/V1__init.sql": {
+    "mtime": 1779862463.0058002,
+    "ast_hash": "e7ea7a2a07c8e73548ab7df131f80443",
+    "semantic_hash": "e7ea7a2a07c8e73548ab7df131f80443"
+  },
+  "/Users/nila/Developer/apps/chores/backend/src/main/java/com/nila/chores/ChoresApplication.java": {
+    "mtime": 1779862443.7293978,
+    "ast_hash": "767681a4849b97b954af17da5be137f4",
+    "semantic_hash": "767681a4849b97b954af17da5be137f4"
+  },
+  "/Users/nila/Developer/apps/chores/backend/src/main/java/com/nila/chores/config/AdminBootstrap.java": {
+    "mtime": 1779862615.9765666,
+    "ast_hash": "1b3c60780c4b3a3dd75a6ae9de133974",
+    "semantic_hash": "1b3c60780c4b3a3dd75a6ae9de133974"
+  },
+  "/Users/nila/Developer/apps/chores/backend/src/main/java/com/nila/chores/config/WebConfig.java": {
+    "mtime": 1779862619.1542485,
+    "ast_hash": "5a3bb61fcb8215f8de71c268944fec89",
+    "semantic_hash": "5a3bb61fcb8215f8de71c268944fec89"
+  },
+  "/Users/nila/Developer/apps/chores/backend/src/main/java/com/nila/chores/security/SecurityConfig.java": {
+    "mtime": 1779862601.3351977,
+    "ast_hash": "c97266135a020340217abfb52ec7b6e0",
+    "semantic_hash": "c97266135a020340217abfb52ec7b6e0"
+  },
+  "/Users/nila/Developer/apps/chores/backend/src/main/java/com/nila/chores/security/JwtService.java": {
+    "mtime": 1779862586.5211723,
+    "ast_hash": "34112eff4f357529026da56b36500409",
+    "semantic_hash": "34112eff4f357529026da56b36500409"
+  },
+  "/Users/nila/Developer/apps/chores/backend/src/main/java/com/nila/chores/security/JwtAuthFilter.java": {
+    "mtime": 1779862594.7009835,
+    "ast_hash": "45081c01406e581b007f4dc4dc78b743",
+    "semantic_hash": "45081c01406e581b007f4dc4dc78b743"
+  },
+  "/Users/nila/Developer/apps/chores/backend/src/main/java/com/nila/chores/security/AuthController.java": {
+    "mtime": 1779862609.8338945,
+    "ast_hash": "82252d8dd093cd024986c857edbee934",
+    "semantic_hash": "82252d8dd093cd024986c857edbee934"
+  },
+  "/Users/nila/Developer/apps/chores/backend/src/main/java/com/nila/chores/security/AuthUser.java": {
+    "mtime": 1779862580.037203,
+    "ast_hash": "d3e7e9140c018a3a2211450f007bb4d1",
+    "semantic_hash": "d3e7e9140c018a3a2211450f007bb4d1"
+  },
+  "/Users/nila/Developer/apps/chores/backend/src/main/java/com/nila/chores/user/UserService.java": {
+    "mtime": 1780234045.3157182,
+    "ast_hash": "ad90a1fe6a006998eba191f0c0775b89",
+    "semantic_hash": "ad90a1fe6a006998eba191f0c0775b89"
+  },
+  "/Users/nila/Developer/apps/chores/backend/src/main/java/com/nila/chores/user/User.java": {
+    "mtime": 1780234020.8305008,
+    "ast_hash": "5016339df13759943ab51447e49d7b4e",
+    "semantic_hash": "5016339df13759943ab51447e49d7b4e"
+  },
+  "/Users/nila/Developer/apps/chores/backend/src/main/java/com/nila/chores/user/UserRepository.java": {
+    "mtime": 1779862473.9710674,
+    "ast_hash": "e39b1d90a13795b1a684414dc34c03a4",
+    "semantic_hash": "e39b1d90a13795b1a684414dc34c03a4"
+  },
+  "/Users/nila/Developer/apps/chores/backend/src/main/java/com/nila/chores/user/UserController.java": {
+    "mtime": 1780234041.119102,
+    "ast_hash": "5726b366b9ae48fddfc3cbe6cb116de1",
+    "semantic_hash": "5726b366b9ae48fddfc3cbe6cb116de1"
+  },
+  "/Users/nila/Developer/apps/chores/backend/src/main/java/com/nila/chores/task/TaskAssignmentRepository.java": {
+    "mtime": 1779923825.3587015,
+    "ast_hash": "acc8f355654524f0ed9ec0be93796306",
+    "semantic_hash": "acc8f355654524f0ed9ec0be93796306"
+  },
+  "/Users/nila/Developer/apps/chores/backend/src/main/java/com/nila/chores/task/AdminTaskController.java": {
+    "mtime": 1779862545.3771696,
+    "ast_hash": "63802556c0f3bf48fc580bea8dd13086",
+    "semantic_hash": "63802556c0f3bf48fc580bea8dd13086"
+  },
+  "/Users/nila/Developer/apps/chores/backend/src/main/java/com/nila/chores/task/TaskAssignment.java": {
+    "mtime": 1779862498.7789385,
+    "ast_hash": "317e177ee9ab56686ddd04768cf98705",
+    "semantic_hash": "317e177ee9ab56686ddd04768cf98705"
+  },
+  "/Users/nila/Developer/apps/chores/backend/src/main/java/com/nila/chores/task/TaskCompletionRepository.java": {
+    "mtime": 1779923909.4080827,
+    "ast_hash": "da0b1bc358dc2e741f571bd8bf599290",
+    "semantic_hash": "da0b1bc358dc2e741f571bd8bf599290"
+  },
+  "/Users/nila/Developer/apps/chores/backend/src/main/java/com/nila/chores/task/TaskRepository.java": {
+    "mtime": 1779862505.2389443,
+    "ast_hash": "e12a2c99e54e55ea6bc8c8994a2e658c",
+    "semantic_hash": "e12a2c99e54e55ea6bc8c8994a2e658c"
+  },
+  "/Users/nila/Developer/apps/chores/backend/src/main/java/com/nila/chores/task/Task.java": {
+    "mtime": 1779862494.6733923,
+    "ast_hash": "5d9bb3f68643721d0f3fe27e2001c94d",
+    "semantic_hash": "5d9bb3f68643721d0f3fe27e2001c94d"
+  },
+  "/Users/nila/Developer/apps/chores/backend/src/main/java/com/nila/chores/task/TaskCompletion.java": {
+    "mtime": 1779862503.2265708,
+    "ast_hash": "9fb3238889a3965bd91cb7aafcc3ac3c",
+    "semantic_hash": "9fb3238889a3965bd91cb7aafcc3ac3c"
+  },
+  "/Users/nila/Developer/apps/chores/backend/src/main/java/com/nila/chores/task/TaskService.java": {
+    "mtime": 1780234032.8542163,
+    "ast_hash": "c856f30e2ed52ada1d7457fe75c46215",
+    "semantic_hash": "c856f30e2ed52ada1d7457fe75c46215"
+  },
+  "/Users/nila/Developer/apps/chores/backend/src/main/java/com/nila/chores/task/KidTaskController.java": {
+    "mtime": 1779862553.929402,
+    "ast_hash": "43a084b665d82172827dd918fa5a3605",
+    "semantic_hash": "43a084b665d82172827dd918fa5a3605"
+  },
+  "/Users/nila/Developer/apps/chores/backend/src/main/java/com/nila/chores/stats/StatsService.java": {
+    "mtime": 1779923887.6514428,
+    "ast_hash": "f654637251dc23d638df7e62c0ee73ef",
+    "semantic_hash": "f654637251dc23d638df7e62c0ee73ef"
+  },
+  "/Users/nila/Developer/apps/chores/backend/src/main/java/com/nila/chores/stats/StatsController.java": {
+    "mtime": 1779923864.8359876,
+    "ast_hash": "00dd42c72e0d79b2178d6e2e00053e29",
+    "semantic_hash": "00dd42c72e0d79b2178d6e2e00053e29"
+  },
+  "/Users/nila/Developer/apps/chores/QODER.md": {
+    "mtime": 1780150729.8837924,
+    "ast_hash": "f958ec4c7420f4a7ac9aea5567a46ef1",
+    "semantic_hash": ""
+  },
+  "/Users/nila/Developer/apps/chores/README.md": {
+    "mtime": 1780137467.9671364,
+    "ast_hash": "0bb07918774f3ecc64416f1a1d950040",
+    "semantic_hash": ""
+  },
+  "/Users/nila/Developer/apps/chores/GEMINI.md": {
+    "mtime": 1780150729.8835752,
+    "ast_hash": "f958ec4c7420f4a7ac9aea5567a46ef1",
+    "semantic_hash": ""
+  },
+  "/Users/nila/Developer/apps/chores/AGENTS.md": {
+    "mtime": 1780150729.8834884,
+    "ast_hash": "f958ec4c7420f4a7ac9aea5567a46ef1",
+    "semantic_hash": ""
+  },
+  "/Users/nila/Developer/apps/chores/CLAUDE.md": {
+    "mtime": 1780150729.8834152,
+    "ast_hash": "f958ec4c7420f4a7ac9aea5567a46ef1",
+    "semantic_hash": ""
+  },
+  "/Users/nila/Developer/apps/chores/.gemini/skills/debug-issue/SKILL.md": {
+    "mtime": 1780150729.8832266,
+    "ast_hash": "e56dde77c5960334afb8de48e9f3c167",
+    "semantic_hash": ""
+  },
+  "/Users/nila/Developer/apps/chores/.gemini/skills/refactor-safely/SKILL.md": {
+    "mtime": 1780150729.8833253,
+    "ast_hash": "5189a9e0e2260536b4d3519a77e09e66",
+    "semantic_hash": ""
+  },
+  "/Users/nila/Developer/apps/chores/.gemini/skills/explore-codebase/SKILL.md": {
+    "mtime": 1780150729.8829916,
+    "ast_hash": "76e306667ef1c1a4f9e6b7ae4d9bc551",
+    "semantic_hash": ""
+  },
+  "/Users/nila/Developer/apps/chores/.gemini/skills/review-changes/SKILL.md": {
+    "mtime": 1780150729.8831139,
+    "ast_hash": "da6827b650c4af68611e7cd7e138c08f",
+    "semantic_hash": ""
+  },
+  "/Users/nila/Developer/apps/chores/k8s/10-backend.yaml": {
+    "mtime": 1780137400.0632167,
+    "ast_hash": "10e8037ac340c8ce28095d0ddcd3cf50",
+    "semantic_hash": ""
+  },
+  "/Users/nila/Developer/apps/chores/k8s/30-ingress.yaml": {
+    "mtime": 1780148551.076126,
+    "ast_hash": "335f5b5408c612e07dc87b4588bb6348",
+    "semantic_hash": ""
+  },
+  "/Users/nila/Developer/apps/chores/k8s/20-frontend.yaml": {
+    "mtime": 1780148549.9251227,
+    "ast_hash": "7c926bcfb515721541b8c9276a260da1",
+    "semantic_hash": ""
+  },
+  "/Users/nila/Developer/apps/chores/.claude/skills/debug-issue/skill.md": {
+    "mtime": 1780150729.8825014,
+    "ast_hash": "f6ca42b7fce135a9dbe1b01f651e35a4",
+    "semantic_hash": ""
+  },
+  "/Users/nila/Developer/apps/chores/.claude/skills/refactor-safely/skill.md": {
+    "mtime": 1780150729.8826218,
+    "ast_hash": "48b6d7fd4e9a3dcef923e9e32f8a75d0",
+    "semantic_hash": ""
+  },
+  "/Users/nila/Developer/apps/chores/.claude/skills/explore-codebase/skill.md": {
+    "mtime": 1780150729.8822243,
+    "ast_hash": "72bcdd4382c8389e22970964cbdf73e3",
+    "semantic_hash": ""
+  },
+  "/Users/nila/Developer/apps/chores/.claude/skills/review-changes/skill.md": {
+    "mtime": 1780150729.8823535,
+    "ast_hash": "255133a497797178b42746808b2fadc9",
+    "semantic_hash": ""
+  },
+  "/Users/nila/Developer/apps/chores/backend/src/main/resources/application.yml": {
+    "mtime": 1779875204.7306511,
+    "ast_hash": "fe4cd8d8bc071d7d970d9179f47ab240",
+    "semantic_hash": ""
+  },
+  "/Users/nila/Developer/apps/chores/docs/ARCHITECTURE.md": {
+    "mtime": 1780137367.3233395,
+    "ast_hash": "06d023d1360454e73d11263a107ba86c",
+    "semantic_hash": ""
+  },
+  "/Users/nila/Developer/apps/chores/docs/USER-MANUAL.md": {
+    "mtime": 1780137367.322533,
+    "ast_hash": "e8a4e4735c20df70d853321aa050bf68",
+    "semantic_hash": ""
+  },
+  "/Users/nila/Developer/apps/chores/docs/README.md": {
+    "mtime": 1780137367.3220797,
+    "ast_hash": "56bc2a7a9728fd58e6034504b5e6d0f0",
+    "semantic_hash": ""
+  },
+  "/Users/nila/Developer/apps/chores/docs/MAINTENANCE.md": {
+    "mtime": 1780137367.3229816,
+    "ast_hash": "462a7532b9501c5e0e10b675bf6e6f50",
+    "semantic_hash": ""
+  },
+  "/Users/nila/Developer/apps/chores/.github/code-review-graph.instruction.md": {
+    "mtime": 1780150729.8840396,
+    "ast_hash": "2902989746abbb7304304db91fe30bcb",
+    "semantic_hash": ""
+  },
+  "/Users/nila/Developer/apps/chores/.kiro/steering/code-review-graph.md": {
+    "mtime": 1780150729.883932,
+    "ast_hash": "f958ec4c7420f4a7ac9aea5567a46ef1",
+    "semantic_hash": ""
+  },
+  "/Users/nila/Developer/apps/chores/frontend/src/app/admin/settings/page.tsx": {
+    "mtime": 1780234076.4420283,
+    "ast_hash": "5dabf278c548e950b36d2ff77ca9cc56",
+    "semantic_hash": "5dabf278c548e950b36d2ff77ca9cc56"
+  },
+  "/Users/nila/Developer/apps/chores/backend/src/main/resources/db/migration/V2__add_edit_window_days.sql": {
+    "mtime": 1780234017.0851347,
+    "ast_hash": "74719989768acc445a11fb870b805f2b",
+    "semantic_hash": "74719989768acc445a11fb870b805f2b"
+  }
+}

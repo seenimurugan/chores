@@ -36,6 +36,13 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    @PatchMapping("/{id}/edit-window")
+    public ResponseEntity<UserDto> updateEditWindow(@PathVariable Long id,
+                                                    @Valid @RequestBody UpdateEditWindowRequest req) {
+        User u = service.updateEditWindow(id, req.editWindowDays());
+        return ResponseEntity.ok(UserDto.of(u));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.deleteKid(id);
@@ -51,9 +58,13 @@ public class UserController {
 
     public record ResetPasswordRequest(@NotBlank @Size(min = 4, max = 128) String password) {}
 
-    public record UserDto(Long id, String username, String displayName, String role, String avatarColor) {
+    public record UpdateEditWindowRequest(
+            @jakarta.validation.constraints.Min(0) @jakarta.validation.constraints.Max(365) int editWindowDays
+    ) {}
+
+    public record UserDto(Long id, String username, String displayName, String role, String avatarColor, int editWindowDays) {
         public static UserDto of(User u) {
-            return new UserDto(u.getId(), u.getUsername(), u.getDisplayName(), u.getRole().name(), u.getAvatarColor());
+            return new UserDto(u.getId(), u.getUsername(), u.getDisplayName(), u.getRole().name(), u.getAvatarColor(), u.getEditWindowDays());
         }
     }
 }

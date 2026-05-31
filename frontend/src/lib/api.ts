@@ -10,9 +10,10 @@ export type Me = {
   displayName: string;
   role: Role;
   avatarColor: string;
+  editWindowDays: number;
 };
 
-export type Kid = Me;
+export type Kid = Me & { editWindowDays: number };
 
 export type Task = {
   id: number;
@@ -96,9 +97,9 @@ export const api = {
   me: () => req<Me>('/api/auth/me'),
 
   // Kid
-  myTasks: () => req<MyTask[]>('/api/me/tasks'),
-  checkTask: (id: number, done: boolean) =>
-    req<void>(`/api/me/tasks/${id}/check`, { method: 'POST', body: JSON.stringify({ done }) }),
+  myTasks: (date?: string) => req<MyTask[]>(`/api/me/tasks${date ? `?date=${date}` : ''}`),
+  checkTask: (id: number, done: boolean, date?: string) =>
+    req<void>(`/api/me/tasks/${id}/check`, { method: 'POST', body: JSON.stringify({ done, date: date ?? null }) }),
   myStats: (days = 14) => req<KidStats>(`/api/me/stats?days=${days}`),
   myMatrix: (days = 14) => req<KidMatrix>(`/api/me/stats/matrix?days=${days}`),
 
@@ -109,6 +110,8 @@ export const api = {
   resetKidPassword: (id: number, password: string) =>
     req<void>(`/api/admin/users/${id}/reset-password`, { method: 'POST', body: JSON.stringify({ password }) }),
   deleteKid: (id: number) => req<void>(`/api/admin/users/${id}`, { method: 'DELETE' }),
+  updateKidEditWindow: (id: number, editWindowDays: number) =>
+    req<Kid>(`/api/admin/users/${id}/edit-window`, { method: 'PATCH', body: JSON.stringify({ editWindowDays }) }),
 
   // Admin — tasks
   listTasks: () => req<Task[]>('/api/admin/tasks'),
