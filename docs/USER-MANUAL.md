@@ -14,7 +14,7 @@ URL: **https://chores.stoat-perch.ts.net** — works on phone Safari, no app to 
 | **You on this Mac (browser)** | https://chores.stoat-perch.ts.net (also works — Mac is on the tailnet) |
 | **Debugging from this Mac (no Tailscale)** | `kubectl -n homelab port-forward svc/chores-frontend 3000:3000` → http://localhost:3000 |
 | **Hitting the API directly (curl/Postman)** | https://chores.stoat-perch.ts.net/api/... — JWT in `Authorization: Bearer <token>` |
-| **Cluster-internal (other pods or Mac shell)** | Frontend: `http://chores-frontend.homelab.svc.cluster.local:3000` · Backend: `http://chores-backend.homelab.svc.cluster.local:8080` |
+| **Cluster-internal (other pods or Mac shell)** | Frontend: `http://chores-frontend.homelab.svc.cluster.local` · Backend: `http://chores-backend.homelab.svc.cluster.local:8080` |
 | **DB direct (psql / GUI)** | `shared-postgres.homelab.svc.cluster.local:5432`, db `kidstasks`, user `kidstasks` — see [Maintenance — Postgres access](MAINTENANCE.md#postgres-access) |
 
 The two paths through the Tailscale ingress on `chores.stoat-perch.ts.net`:

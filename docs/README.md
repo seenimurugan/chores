@@ -13,7 +13,7 @@ Source: `/Users/nila/Developer/apps/chores/`
 | **iPhone / kids / family on Tailscale** | https://chores.stoat-perch.ts.net |
 | **This Mac (browser, localhost)** | http://localhost:3000 *(only when the port-forward is running — see [LAN + localhost access](#lan--localhost-access-optional))* |
 | **LAN devices** (TV, other laptops) | http://192.168.68.57:3000 *(same condition as localhost)* |
-| **Cluster DNS — frontend** (other pods / Mac shell) | http://chores-frontend.homelab.svc.cluster.local:3000 |
+| **Cluster DNS — frontend** (other pods / Mac shell) | http://chores-frontend.homelab.svc.cluster.local |
 | **Cluster DNS — backend API** (curl / Postman) | http://chores-backend.homelab.svc.cluster.local:8080 |
 | **Ad-hoc debug port-forward** | `kubectl -n homelab port-forward svc/chores-frontend 3000:3000` |
 
@@ -43,7 +43,7 @@ By default the app is only reachable via Tailscale + cluster DNS. To also expose
 | | |
 |---|---|
 | User | `admin` |
-| Password | `changeme` |
+| Password | `admin` |
 
 **Change immediately** — see [Maintenance → Rotate admin password](MAINTENANCE.md#rotate-admin-password). The bootstrap admin is only created on first start when no admin exists, so editing the Secret afterwards does nothing — you must update the row in Postgres.
 
