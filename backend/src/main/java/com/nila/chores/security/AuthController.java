@@ -32,7 +32,7 @@ public class AuthController {
         }
         String token = jwt.issue(u);
         return new LoginResponse(token, jwt.getTtlMillis() / 1000,
-                new MeDto(u.getId(), u.getUsername(), u.getDisplayName(), u.getRole().name(), u.getAvatarColor()));
+                new MeDto(u.getId(), u.getUsername(), u.getDisplayName(), u.getRole().name(), u.getAvatarColor(), u.getEditWindowDays()));
     }
 
     @GetMapping("/me")
@@ -40,10 +40,10 @@ public class AuthController {
         if (principal == null) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         User u = users.findById(principal.id())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
-        return new MeDto(u.getId(), u.getUsername(), u.getDisplayName(), u.getRole().name(), u.getAvatarColor());
+        return new MeDto(u.getId(), u.getUsername(), u.getDisplayName(), u.getRole().name(), u.getAvatarColor(), u.getEditWindowDays());
     }
 
     public record LoginRequest(@NotBlank String username, @NotBlank String password) {}
     public record LoginResponse(String token, long expiresInSeconds, MeDto user) {}
-    public record MeDto(Long id, String username, String displayName, String role, String avatarColor) {}
+    public record MeDto(Long id, String username, String displayName, String role, String avatarColor, int editWindowDays) {}
 }
