@@ -22,7 +22,7 @@
             │ Next.js 15 SSR   │     │  Spring Boot 3     │
             │ port 3000        │     │  port 8080         │
             └──────────────────┘     └─────────┬──────────┘
-                                                │ JDBC, creds from shared-postgres-secret
+                                                │ JDBC, creds from chores-postgres-secret
                                                 ▼
                                      ┌────────────────────────────────┐
                                      │   shared-postgres (cluster)    │

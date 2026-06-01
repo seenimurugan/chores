@@ -81,7 +81,7 @@ By default the app is only reachable via Tailscale + cluster DNS. To also expose
 
 ## Storage
 
-This app does not own its database — it uses the cluster's [Shared Postgres](../shared-postgres/README.md) at `shared-postgres.homelab.svc.cluster.local:5432`, database `kidstasks`. The schema is created on startup by Flyway (`V1__init.sql`). Credentials are read from Secret `shared-postgres-secret` (keys `KIDSTASKS_DB`, `KIDSTASKS_USER`, `KIDSTASKS_PASSWORD`).
+This app does not own its database — it uses the cluster's [Shared Postgres](../shared-postgres/README.md) at `shared-postgres.homelab.svc.cluster.local:5432`, database `kidstasks`. The schema is created on startup by Flyway (`V1__init.sql`). Credentials are read from Secret `chores-postgres-secret` (keys `KIDSTASKS_DB`, `KIDSTASKS_USER`, `KIDSTASKS_PASSWORD`).
 
 Backend and frontend pods are stateless — no PVCs in this app's manifests.
 
@@ -99,7 +99,7 @@ Backend and frontend pods are stateless — no PVCs in this app's manifests.
 |---|---|
 | `/Users/nila/Developer/apps/chores/backend/` | Spring Boot source |
 | `/Users/nila/Developer/apps/chores/frontend/` | Next.js source |
-| `/Users/nila/Developer/apps/chores/k8s/10-backend.yaml` | Backend Deployment + Service + Secret (wires DB env from `shared-postgres-secret`) |
+| `/Users/nila/Developer/apps/chores/k8s/10-backend.yaml` | Backend Deployment + Service + Secret (wires DB env from `chores-postgres-secret`) |
 | `/Users/nila/Developer/apps/chores/k8s/20-frontend.yaml` | Frontend Deployment + Service |
 | `/Users/nila/Developer/apps/chores/k8s/30-ingress.yaml` | Tailscale Ingress (path-routed) |
 | `~/homelab/shared-postgres.yaml` | Shared Postgres StatefulSet (not owned by this app — see [Shared Postgres](../shared-postgres/README.md)) |
