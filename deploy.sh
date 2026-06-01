@@ -40,29 +40,28 @@ else
   echo "Namespace '$NAMESPACE' already exists."
 fi
 
-# ── 4. Create / update the shared-postgres-secret slice for chores ───────────
-# The chores app reads KIDSTASKS_* from shared-postgres-secret.
-# shared-postgres-secret is a SHARED secret — multiple apps own disjoint key
-# prefixes (EMAILMATRIX_*, MOVIESDA_*, REMINDERS_*, STORAGE_CONSOLE_*, etc.).
-# NEVER use `kubectl apply` of a partial secret here — it would replace the
-# entire object and delete other apps' keys (root cause of the 2026-06 outage).
-# Instead: use JSON Patch (RFC 6902) to upsert only our three keys.
-echo "Ensuring shared-postgres-secret has KIDSTASKS_* keys (JSON Patch RFC 6902, no stomp)..."
+# ── 4. Create / update chores-postgres-secret ────────────────────────────────
+# Dedicated per-app secret (split from shared-postgres-secret on 2026-06-01).
+# Each app owns its own postgres-credentials secret so no app's deploy.sh can
+# stomp another app's keys (root cause of the 2026-06 outage).
+# JSON Patch (RFC 6902) on existing secrets is the upsert pattern used across
+# the homelab.
+echo "Ensuring chores-postgres-secret has KIDSTASKS_* keys (JSON Patch RFC 6902, no stomp)..."
+SECRET_NAME="chores-postgres-secret"
 _KT_DB_B64=$(printf '%s' "${KIDSTASKS_DB}" | base64 | tr -d '\n')
 _KT_USER_B64=$(printf '%s' "${KIDSTASKS_USER}" | base64 | tr -d '\n')
 _KT_PASS_B64=$(printf '%s' "${KIDSTASKS_PASSWORD}" | base64 | tr -d '\n')
 
-if kubectl -n "$NAMESPACE" get secret shared-postgres-secret &>/dev/null; then
+if kubectl -n "$NAMESPACE" get secret "$SECRET_NAME" &>/dev/null; then
   # Secret already exists — patch only our keys
-  kubectl patch secret -n "$NAMESPACE" shared-postgres-secret --type=json -p="[
+  kubectl patch secret -n "$NAMESPACE" "$SECRET_NAME" --type=json -p="[
     {\"op\":\"add\",\"path\":\"/data/KIDSTASKS_DB\",\"value\":\"${_KT_DB_B64}\"},
     {\"op\":\"add\",\"path\":\"/data/KIDSTASKS_USER\",\"value\":\"${_KT_USER_B64}\"},
     {\"op\":\"add\",\"path\":\"/data/KIDSTASKS_PASSWORD\",\"value\":\"${_KT_PASS_B64}\"}
   ]"
 else
-  # Secret does not exist yet (fresh cluster) — create it with just our keys.
-  # cluster-setup's deploy will add other apps' keys when it runs.
-  kubectl -n "$NAMESPACE" create secret generic shared-postgres-secret \
+  # Secret does not exist yet (fresh cluster) — create it.
+  kubectl -n "$NAMESPACE" create secret generic "$SECRET_NAME" \
     --from-literal=KIDSTASKS_DB="${KIDSTASKS_DB}" \
     --from-literal=KIDSTASKS_USER="${KIDSTASKS_USER}" \
     --from-literal=KIDSTASKS_PASSWORD="${KIDSTASKS_PASSWORD}"

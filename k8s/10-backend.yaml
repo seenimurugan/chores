@@ -41,20 +41,20 @@ spec:
               name: http
           env:
             # Uses the shared Postgres in the cluster (see docs/homelab-k8s-setup/apps/shared-postgres/).
-            # Creds are pre-provisioned in shared-postgres-secret under the KIDSTASKS_* keys.
+            # Creds live in dedicated chores-postgres-secret under the KIDSTASKS_* keys.
             - name: DB_HOST
               value: shared-postgres.${NAMESPACE}.svc.cluster.local
             - name: DB_PORT
               value: "5432"
             - name: DB_NAME
               valueFrom:
-                secretKeyRef: { name: shared-postgres-secret, key: KIDSTASKS_DB }
+                secretKeyRef: { name: chores-postgres-secret, key: KIDSTASKS_DB }
             - name: SPRING_DATASOURCE_USERNAME
               valueFrom:
-                secretKeyRef: { name: shared-postgres-secret, key: KIDSTASKS_USER }
+                secretKeyRef: { name: chores-postgres-secret, key: KIDSTASKS_USER }
             - name: SPRING_DATASOURCE_PASSWORD
               valueFrom:
-                secretKeyRef: { name: shared-postgres-secret, key: KIDSTASKS_PASSWORD }
+                secretKeyRef: { name: chores-postgres-secret, key: KIDSTASKS_PASSWORD }
             - name: SPRING_DATASOURCE_URL
               value: jdbc:postgresql://$(DB_HOST):$(DB_PORT)/$(DB_NAME)
           envFrom:
