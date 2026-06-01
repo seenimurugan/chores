@@ -41,7 +41,7 @@ Everything you'll need when something breaks, in one block.
 | Port | `5432` |
 | Database | `kidstasks` |
 | User | `kidstasks` |
-| Password (read from Secret) | `kubectl -n homelab get secret shared-postgres-secret -o jsonpath='{.data.KIDSTASKS_PASSWORD}' \| base64 -d; echo` |
+| Password (read from Secret) | `kubectl -n homelab get secret chores-postgres-secret -o jsonpath='{.data.KIDSTASKS_PASSWORD}' \| base64 -d; echo` |
 | Open a psql shell | `kubectl -n homelab exec -it shared-postgres-0 -- psql -U kidstasks kidstasks` |
 | List chores tables | `kubectl -n homelab exec shared-postgres-0 -- psql -U kidstasks -d kidstasks -c '\dt'` |
 | GUI access (TablePlus / DBeaver) | `kubectl -n homelab port-forward svc/shared-postgres 5432:5432`, then localhost:5432 |
@@ -52,7 +52,7 @@ Everything you'll need when something breaks, in one block.
 | Secret | Keys | Purpose |
 |---|---|---|
 | `chores-backend-secret` | `CHORES_JWT_SECRET`, `CHORES_ADMIN_USERNAME`, `CHORES_ADMIN_PASSWORD`, `CHORES_ADMIN_DISPLAY_NAME` | JWT signing key + bootstrap admin |
-| `shared-postgres-secret` (shared) | `KIDSTASKS_DB`, `KIDSTASKS_USER`, `KIDSTASKS_PASSWORD` | DB creds for chores |
+| `chores-postgres-secret` | `KIDSTASKS_DB`, `KIDSTASKS_USER`, `KIDSTASKS_PASSWORD` | DB creds for chores |
 
 ### One-liners worth memorising
 
@@ -108,7 +108,7 @@ This app does **not** run its own Postgres. It connects to the cluster's shared 
 | `chores-frontend` | Deployment (1) | `chores-frontend:0.1` (locally built, arm64, `imagePullPolicy: Never`) |
 | `chores` | Ingress | Tailscale (path-routed, single hostname) |
 | `chores-backend-secret` | Secret | `CHORES_JWT_SECRET`, `CHORES_ADMIN_USERNAME`, `CHORES_ADMIN_PASSWORD`, `CHORES_ADMIN_DISPLAY_NAME` |
-| `shared-postgres-secret` | Secret (existing, shared) | DB creds — chores reads `KIDSTASKS_DB`, `KIDSTASKS_USER`, `KIDSTASKS_PASSWORD` |
+| `chores-postgres-secret` | Secret | DB creds — chores reads `KIDSTASKS_DB`, `KIDSTASKS_USER`, `KIDSTASKS_PASSWORD` |
 | `shared-postgres-0` | StatefulSet pod (existing, shared) | Owned by the cluster, not by this app |
 
 ---
@@ -165,15 +165,15 @@ The chores app uses the cluster's **shared Postgres** — not a dedicated one. F
 | Port | `5432` |
 | Database | `kidstasks` |
 | User | `kidstasks` (owns the schema; bcrypt'd via Flyway) |
-| Password | Stored in Secret `shared-postgres-secret`, key `KIDSTASKS_PASSWORD` |
+| Password | Stored in Secret `chores-postgres-secret`, key `KIDSTASKS_PASSWORD` |
 
 The backend reads these via env, wired in `k8s/10-backend.yaml`:
 ```yaml
 - name: DB_HOST   value: shared-postgres.homelab.svc.cluster.local
 - name: DB_PORT   value: "5432"
-- name: DB_NAME       valueFrom: { secretKeyRef: { name: shared-postgres-secret, key: KIDSTASKS_DB } }
-- name: SPRING_DATASOURCE_USERNAME  valueFrom: { secretKeyRef: { name: shared-postgres-secret, key: KIDSTASKS_USER } }
-- name: SPRING_DATASOURCE_PASSWORD  valueFrom: { secretKeyRef: { name: shared-postgres-secret, key: KIDSTASKS_PASSWORD } }
+- name: DB_NAME       valueFrom: { secretKeyRef: { name: chores-postgres-secret, key: KIDSTASKS_DB } }
+- name: SPRING_DATASOURCE_USERNAME  valueFrom: { secretKeyRef: { name: chores-postgres-secret, key: KIDSTASKS_USER } }
+- name: SPRING_DATASOURCE_PASSWORD  valueFrom: { secretKeyRef: { name: chores-postgres-secret, key: KIDSTASKS_PASSWORD } }
 - name: SPRING_DATASOURCE_URL       value: jdbc:postgresql://$(DB_HOST):$(DB_PORT)/$(DB_NAME)
 ```
 
@@ -190,7 +190,7 @@ kubectl -n homelab exec shared-postgres-0 -- psql -U kidstasks -d kidstasks -c '
 ### See the current password
 
 ```bash
-kubectl -n homelab get secret shared-postgres-secret \
+kubectl -n homelab get secret chores-postgres-secret \
   -o jsonpath='{.data.KIDSTASKS_PASSWORD}' | base64 -d; echo
 ```
 
@@ -206,7 +206,7 @@ Connect the GUI to `localhost:5432`, db `kidstasks`, user `kidstasks`, password 
 
 ```bash
 NEW_PWD="strong-password-here"
-kubectl -n homelab patch secret shared-postgres-secret --type=json -p="[
+kubectl -n homelab patch secret chores-postgres-secret --type=json -p="[
   {\"op\":\"replace\",\"path\":\"/data/KIDSTASKS_PASSWORD\",\"value\":\"$(echo -n "$NEW_PWD" | base64)\"}
 ]"
 kubectl -n homelab exec shared-postgres-0 -- psql -U postgres -c \
@@ -341,13 +341,13 @@ kubectl -n homelab exec shared-postgres-0 -- pg_isready -U kidstasks
 # Expect: "accepting connections"
 
 # 3. Are the chores creds in the Secret correct?
-kubectl -n homelab get secret shared-postgres-secret \
+kubectl -n homelab get secret chores-postgres-secret \
   -o jsonpath='{.data.KIDSTASKS_PASSWORD}' | base64 -d; echo
 # (Should match the password the kidstasks user actually has — if you ran ALTER USER
 #  without patching the Secret, this is where the drift shows.)
 
 # 4. Try connecting as the kidstasks user with that password.
-PW=$(kubectl -n homelab get secret shared-postgres-secret \
+PW=$(kubectl -n homelab get secret chores-postgres-secret \
   -o jsonpath='{.data.KIDSTASKS_PASSWORD}' | base64 -d)
 kubectl -n homelab exec shared-postgres-0 -- env PGPASSWORD="$PW" \
   psql -h shared-postgres -U kidstasks -d kidstasks -c "select count(*) from app_user;"
@@ -382,7 +382,7 @@ kubectl -n homelab logs deploy/chores-backend --tail=200
 
 Likely causes:
 - **Postgres not reachable** — check `shared-postgres-0` is `Running 1/1`. If `shared-postgres` is down, every app that uses it (including chores) goes down. The backend startup probe waits up to 5 minutes; if Postgres is slower than that, the backend dies. Just delete the failing backend pod once Postgres is up: `kubectl -n homelab delete pod -l app=chores-backend`.
-- **`KIDSTASKS_PASSWORD` mismatch** — the value in `shared-postgres-secret` doesn't match the actual DB password (e.g. someone ran `ALTER USER` without patching the secret). Either rotate again with the proper recipe above, or `kubectl exec shared-postgres-0 -- psql -U postgres -c "ALTER USER kidstasks WITH PASSWORD '...'"` to match.
+- **`KIDSTASKS_PASSWORD` mismatch** — the value in `chores-postgres-secret` doesn't match the actual DB password (e.g. someone ran `ALTER USER` without patching the secret). Either rotate again with the proper recipe above, or `kubectl exec shared-postgres-0 -- psql -U postgres -c "ALTER USER kidstasks WITH PASSWORD '...'"` to match.
 - **Flyway checksum mismatch** — only happens if you edited `V1__init.sql` after first deploy. In dev, blast the chores schema and let Flyway re-run:
   ```bash
   kubectl -n homelab exec shared-postgres-0 -- \
@@ -453,7 +453,7 @@ If something breaks: `kubectl -n homelab rollout undo deploy/chores-backend`.
 |---|---|
 | `/Users/nila/Developer/apps/chores/backend/` | Spring Boot source |
 | `/Users/nila/Developer/apps/chores/frontend/` | Next.js source |
-| `/Users/nila/Developer/apps/chores/k8s/10-backend.yaml` | Backend (Secret + Deployment + Service) — pulls DB creds from `shared-postgres-secret` |
+| `/Users/nila/Developer/apps/chores/k8s/10-backend.yaml` | Backend (Secret + Deployment + Service) — pulls DB creds from `chores-postgres-secret` |
 | `/Users/nila/Developer/apps/chores/k8s/20-frontend.yaml` | Frontend (Deployment + Service) |
 | `/Users/nila/Developer/apps/chores/k8s/30-ingress.yaml` | Tailscale Ingress (path-routed) |
 | `/Users/nila/Developer/apps/chores/README.md` | Project quick-start (build & deploy commands) |

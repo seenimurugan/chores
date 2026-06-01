@@ -9,7 +9,7 @@ Parent (admin) creates kid accounts and assigns chores with recurrence and point
 ## Depends on
 
 - **cluster-setup** — `homelab` namespace, Tailscale ingress controller: [`github.com/seenimurugan/homelab-cluster-setup`](https://github.com/seenimurugan/homelab-cluster-setup)
-- **shared-postgres** — `shared-postgres.homelab.svc.cluster.local`, database `kidstasks`, creds in `shared-postgres-secret`: [`github.com/seenimurugan/homelab-shared-postgres`](https://github.com/seenimurugan/homelab-shared-postgres)
+- **shared-postgres** — `shared-postgres.homelab.svc.cluster.local`, database `kidstasks`, creds in `chores-postgres-secret`: [`github.com/seenimurugan/homelab-shared-postgres`](https://github.com/seenimurugan/homelab-shared-postgres)
 
 ## Quick start
 
