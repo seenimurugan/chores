@@ -23,7 +23,7 @@ public class AdminBootstrap {
         return args -> {
             boolean hasAdmin = users.findAll().stream().anyMatch(u -> u.getRole() == User.Role.ADMIN);
             if (hasAdmin) {
-                log.info("Admin user already present — skipping bootstrap.");
+                log.info("event=bootstrap.admin outcome=already-present");
                 return;
             }
             User admin = new User();
@@ -33,7 +33,8 @@ public class AdminBootstrap {
             admin.setRole(User.Role.ADMIN);
             admin.setAvatarColor("#4263eb");
             users.save(admin);
-            log.info("Bootstrapped admin user '{}'. Change the password immediately if using the default.", username);
+            log.info("event=bootstrap.admin outcome=created username={} message='Change the password immediately if using the default.'",
+                    username);
         };
     }
 }
