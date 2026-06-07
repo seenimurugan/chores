@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import AppShell from '@/components/AppShell';
-import { api, Kid, Task } from '@/lib/api';
+import { api, Kid, ReminderResult, Task } from '@/lib/api';
 
 // Two groups so the picker can show a labelled break in the UI.
 const ICONS_CHORES = ['🧹', '🛏️', '🦷', '🍽️', '🐕', '🚿', '🗑️', '👕', '🥗', '📚'];
@@ -57,6 +57,43 @@ function Inner() {
   const [assignees, setAssignees] = useState<Record<number, number[]>>({});
   const [error, setError] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<number | null>(null);
+  const [toast, setToast] = useState<string | null>(null);
+  const [reminderBusy, setReminderBusy] = useState<number | null>(null);
+
+  function showToast(msg: string) {
+    setToast(msg);
+    setTimeout(() => setToast(null), 6000);
+  }
+
+  async function sendReminder(t: Task) {
+    setReminderBusy(t.id);
+    try {
+      const results: ReminderResult[] = await api.sendReminder(t.id);
+      // Build a human-friendly summary grouped by kid
+      const byKid = new Map<number, { name: string; channels: string[]; skipped: boolean }>();
+      for (const r of results) {
+        const entry = byKid.get(r.kidId) ?? { name: r.kidName, channels: [], skipped: false };
+        if (r.skipped) {
+          entry.skipped = true;
+        } else if (r.sent) {
+          entry.channels.push(r.channel ?? '');
+        }
+        byKid.set(r.kidId, entry);
+      }
+      const parts = Array.from(byKid.values()).map((e) => {
+        if (e.skipped) return `${e.name}: skipped (no contact)`;
+        if (e.channels.length > 0) return `${e.name}: sent (${e.channels.join(', ')})`;
+        return `${e.name}: failed`;
+      });
+      showToast(results.length === 0
+        ? 'No kids assigned or no contact info.'
+        : parts.join(' | '));
+    } catch (e: any) {
+      showToast('Error: ' + (e?.message ?? 'unknown'));
+    } finally {
+      setReminderBusy(null);
+    }
+  }
 
   useEffect(() => { reload(); }, []);
 
@@ -107,6 +144,14 @@ function Inner() {
     <div className="space-y-6">
       <h1 className="text-2xl font-semibold">Tasks</h1>
 
+      {toast && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 max-w-lg w-full mx-4">
+          <div className="bg-slate-900 text-white rounded-xl shadow-xl px-4 py-3 text-sm leading-snug">
+            {toast}
+          </div>
+        </div>
+      )}
+
       <section className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 space-y-3">
         <h2 className="font-semibold">Create a new task</h2>
         <TaskForm
@@ -154,6 +199,14 @@ function Inner() {
                     </div>
                     <div className="flex gap-3 flex-wrap justify-end">
                       <button onClick={() => setEditingId(t.id)} className="text-sm text-brand-700 hover:text-brand-600 dark:text-brand-100 font-medium">Edit</button>
+                      <button
+                        onClick={() => sendReminder(t)}
+                        disabled={reminderBusy === t.id}
+                        className="text-sm text-emerald-700 hover:text-emerald-600 disabled:opacity-50 font-medium"
+                        title="Send a reminder now to all assigned kids with contact info"
+                      >
+                        {reminderBusy === t.id ? 'Sending…' : 'Send reminder'}
+                      </button>
                       <button onClick={() => toggleActive(t)} className="text-sm text-slate-600 hover:text-slate-900 dark:hover:text-white">
                         {t.active ? 'Deactivate' : 'Activate'}
                       </button>
