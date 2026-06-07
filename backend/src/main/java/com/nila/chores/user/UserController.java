@@ -13,6 +13,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.ZoneId;
+import java.time.zone.ZoneRulesException;
 import java.util.List;
 
 @RestController
@@ -37,10 +39,11 @@ public class UserController {
     @PostMapping
     public ResponseEntity<UserDto> create(@AuthenticationPrincipal AuthUser actor,
                                           @Valid @RequestBody CreateKidRequest req) {
-        log.info("event=admin.users.create actor={} target.username={}", actor.id(), req.username());
+        log.info("event=admin.users.create actor={} target.username={} timezone={}", actor.id(), req.username(), req.timezone());
+        String tz = resolveAndValidateTimezone(req.timezone());
         User u = service.createKid(actor.id(), actor.username(),
                 req.username().trim(), req.password(), req.displayName().trim(), req.avatarColor(),
-                req.email(), req.telegramChatId());
+                req.email(), req.telegramChatId(), tz);
         return ResponseEntity.ok(UserDto.of(u));
     }
 
@@ -65,10 +68,33 @@ public class UserController {
     public ResponseEntity<UserDto> updateContacts(@AuthenticationPrincipal AuthUser actor,
                                                   @PathVariable Long id,
                                                   @Valid @RequestBody UpdateContactsRequest req) {
-        log.info("event=admin.users.contacts.update actor={} target={} hasEmail={} hasTelegram={}",
-                actor.id(), id, req.email() != null, req.telegramChatId() != null);
-        User u = service.updateContacts(actor.id(), id, req.email(), req.telegramChatId());
+        log.info("event=admin.users.contacts.update actor={} target={} hasEmail={} hasTelegram={} timezone={}",
+                actor.id(), id, req.email() != null, req.telegramChatId() != null, req.timezone());
+        String tz = resolveAndValidateTimezone(req.timezone());
+        User u = service.updateContacts(actor.id(), id, req.email(), req.telegramChatId(), tz);
         return ResponseEntity.ok(UserDto.of(u));
+    }
+
+    /**
+     * Validates that {@code raw} is a real IANA zone identifier.
+     * Returns the canonical zone string, or "Europe/London" if {@code raw} is null/blank.
+     * Throws 400 if the zone is non-blank but unrecognised.
+     */
+    private String resolveAndValidateTimezone(String raw) {
+        if (raw == null || raw.isBlank()) {
+            log.debug("event=timezone.resolve input=blank outcome=defaulted-to-Europe/London");
+            return "Europe/London";
+        }
+        try {
+            ZoneId zone = ZoneId.of(raw.trim());
+            log.debug("event=timezone.resolve input={} outcome=valid zone={}", raw, zone.getId());
+            return zone.getId();
+        } catch (ZoneRulesException | IllegalArgumentException e) {
+            log.warn("event=timezone.resolve input={} outcome=invalid reason={}", raw, e.getMessage());
+            throw new org.springframework.web.server.ResponseStatusException(
+                    org.springframework.http.HttpStatus.BAD_REQUEST,
+                    "Invalid IANA timezone: " + raw);
+        }
     }
 
     @DeleteMapping("/{id}")
@@ -84,7 +110,8 @@ public class UserController {
             @NotBlank @Size(min = 1, max = 128) String displayName,
             String avatarColor,
             @Email @Size(max = 255) String email,
-            Long telegramChatId
+            Long telegramChatId,
+            @Size(max = 64) String timezone
     ) {}
 
     public record ResetPasswordRequest(@NotBlank @Size(min = 4, max = 128) String password) {}
@@ -95,15 +122,17 @@ public class UserController {
 
     public record UpdateContactsRequest(
             @Email @Size(max = 255) String email,
-            Long telegramChatId
+            Long telegramChatId,
+            @Size(max = 64) String timezone
     ) {}
 
     public record UserDto(Long id, String username, String displayName, String role,
                           String avatarColor, int editWindowDays,
-                          String email, Long telegramChatId) {
+                          String email, Long telegramChatId, String timezone) {
         public static UserDto of(User u) {
             return new UserDto(u.getId(), u.getUsername(), u.getDisplayName(), u.getRole().name(),
-                    u.getAvatarColor(), u.getEditWindowDays(), u.getEmail(), u.getTelegramChatId());
+                    u.getAvatarColor(), u.getEditWindowDays(), u.getEmail(), u.getTelegramChatId(),
+                    u.getTimezone());
         }
     }
 }

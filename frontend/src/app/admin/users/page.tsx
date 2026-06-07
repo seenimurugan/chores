@@ -6,6 +6,43 @@ import { api, Kid } from '@/lib/api';
 
 const PALETTE = ['#4263eb', '#22c55e', '#f59e0b', '#ec4899', '#06b6d4', '#a855f7', '#ef4444'];
 
+// Curated list of common IANA timezones for the dropdown
+const TIMEZONES = [
+  'Europe/London',
+  'Europe/Dublin',
+  'Europe/Paris',
+  'Europe/Berlin',
+  'Europe/Amsterdam',
+  'Europe/Rome',
+  'Europe/Madrid',
+  'Europe/Athens',
+  'Europe/Istanbul',
+  'Asia/Dubai',
+  'Asia/Kolkata',
+  'Asia/Colombo',
+  'Asia/Dhaka',
+  'Asia/Karachi',
+  'Asia/Riyadh',
+  'Asia/Singapore',
+  'Asia/Tokyo',
+  'Asia/Shanghai',
+  'Australia/Sydney',
+  'Australia/Melbourne',
+  'Pacific/Auckland',
+  'America/New_York',
+  'America/Chicago',
+  'America/Denver',
+  'America/Los_Angeles',
+  'America/Toronto',
+  'America/Vancouver',
+  'America/Sao_Paulo',
+  'Africa/Johannesburg',
+  'Africa/Lagos',
+  'UTC',
+];
+
+const DEFAULT_TIMEZONE = 'Europe/London';
+
 export default function AdminUsersPage() {
   return (
     <AppShell requireRole="ADMIN">
@@ -21,9 +58,10 @@ type CreateForm = {
   avatarColor: string;
   email: string;
   telegramChatId: string;
+  timezone: string;
 };
 
-type ContactsForm = { email: string; telegramChatId: string };
+type ContactsForm = { email: string; telegramChatId: string; timezone: string };
 
 const EMPTY_CREATE: CreateForm = {
   username: '',
@@ -32,6 +70,7 @@ const EMPTY_CREATE: CreateForm = {
   avatarColor: PALETTE[0],
   email: '',
   telegramChatId: '',
+  timezone: DEFAULT_TIMEZONE,
 };
 
 function Inner() {
@@ -42,7 +81,7 @@ function Inner() {
 
   // Which kid's contacts panel is expanded for editing
   const [editingContactsId, setEditingContactsId] = useState<number | null>(null);
-  const [contactsForm, setContactsForm] = useState<ContactsForm>({ email: '', telegramChatId: '' });
+  const [contactsForm, setContactsForm] = useState<ContactsForm>({ email: '', telegramChatId: '', timezone: DEFAULT_TIMEZONE });
   const [contactsBusy, setContactsBusy] = useState(false);
   const [contactsError, setContactsError] = useState<string | null>(null);
 
@@ -65,6 +104,7 @@ function Inner() {
         avatarColor: form.avatarColor,
         email: form.email.trim() || undefined,
         telegramChatId: chatId ?? undefined,
+        timezone: form.timezone || DEFAULT_TIMEZONE,
       });
       setForm(EMPTY_CREATE);
       reload();
@@ -91,6 +131,7 @@ function Inner() {
     setContactsForm({
       email: k.email ?? '',
       telegramChatId: k.telegramChatId != null ? String(k.telegramChatId) : '',
+      timezone: k.timezone ?? DEFAULT_TIMEZONE,
     });
     setContactsError(null);
   }
@@ -103,6 +144,7 @@ function Inner() {
       await api.updateKidContacts(kidId, {
         email: contactsForm.email.trim() || null,
         telegramChatId: chatId,
+        timezone: contactsForm.timezone || DEFAULT_TIMEZONE,
       });
       setEditingContactsId(null);
       reload();
@@ -151,6 +193,11 @@ function Inner() {
             onChange={(v) => setForm({ ...form, telegramChatId: v })}
             placeholder="e.g. 123456789"
           />
+          <TimezoneSelect
+            label="Timezone"
+            value={form.timezone}
+            onChange={(v) => setForm({ ...form, timezone: v })}
+          />
         </div>
         {error && <div className="text-sm text-red-600">{error}</div>}
         <button disabled={busy} className="rounded-lg bg-brand-500 hover:bg-brand-600 text-white font-semibold py-2 px-4">
@@ -171,12 +218,11 @@ function Inner() {
                 <div className="flex-1 min-w-0">
                   <div className="font-semibold truncate">{k.displayName}</div>
                   <div className="text-xs text-slate-500 truncate">@{k.username}</div>
-                  {(k.email || k.telegramChatId) && (
-                    <div className="text-xs text-slate-400 mt-0.5 space-x-2">
-                      {k.email && <span>Email: {k.email}</span>}
-                      {k.telegramChatId && <span>TG: {k.telegramChatId}</span>}
-                    </div>
-                  )}
+                  <div className="text-xs text-slate-400 mt-0.5 space-x-2">
+                    {k.email && <span>Email: {k.email}</span>}
+                    {k.telegramChatId && <span>TG: {k.telegramChatId}</span>}
+                    <span>TZ: {k.timezone ?? DEFAULT_TIMEZONE}</span>
+                  </div>
                 </div>
                 <button onClick={() => reset(k)} className="text-sm text-slate-600 hover:text-slate-900 dark:hover:text-white">Reset password</button>
                 <button
@@ -205,6 +251,11 @@ function Inner() {
                       value={contactsForm.telegramChatId}
                       onChange={(v) => setContactsForm({ ...contactsForm, telegramChatId: v })}
                       placeholder="e.g. 123456789"
+                    />
+                    <TimezoneSelect
+                      label="Timezone"
+                      value={contactsForm.timezone}
+                      onChange={(v) => setContactsForm({ ...contactsForm, timezone: v })}
                     />
                   </div>
                   {contactsError && <div className="text-sm text-red-600">{contactsError}</div>}
@@ -246,6 +297,27 @@ function Input({ label, value, onChange, type = 'text', required, autoComplete, 
         placeholder={placeholder}
         className="mt-1 w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-500"
       />
+    </label>
+  );
+}
+
+function TimezoneSelect({ label, value, onChange }: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  return (
+    <label className="block">
+      <span className="text-sm font-medium">{label}</span>
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="mt-1 w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-500"
+      >
+        {TIMEZONES.map((tz) => (
+          <option key={tz} value={tz}>{tz}</option>
+        ))}
+      </select>
     </label>
   );
 }

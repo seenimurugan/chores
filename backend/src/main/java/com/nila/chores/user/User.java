@@ -44,6 +44,14 @@ public class User {
     @Column(name = "telegram_chat_id", nullable = true)
     private Long telegramChatId;
 
+    /**
+     * IANA timezone string (e.g. "Europe/London", "Asia/Kolkata").
+     * Used to localise reminder scheduling for each kid.
+     * Defaults to Europe/London so existing records get a sane value.
+     */
+    @Column(name = "timezone", nullable = false)
+    private String timezone = "Europe/London";
+
     @Column(name = "created_at", nullable = false, insertable = false, updatable = false)
     private OffsetDateTime createdAt;
 
