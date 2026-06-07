@@ -74,11 +74,13 @@ export type ReminderResult = {
 export type ChoreOverviewRow = {
   choreId: number;
   choreTitle: string;
+  icon: string | null;
   weeklyTarget: number;
   doneThisWeek: number;
   status: 'ON_TRACK' | 'AT_RISK';
-  remindersSentThisWeek: number;
-  lastReminderAt: string | null; // ISO offset date-time
+  completionsInPeriod: number;
+  remindersSentInPeriod: number;
+  lastReminderInPeriod: string | null; // ISO offset date-time
 };
 
 function token(): string | null {
@@ -161,5 +163,6 @@ export const api = {
   adminMatrix: (days = 14) => req<AdminMatrix>(`/api/admin/stats/matrix?days=${days}`),
 
   // Admin — reminder overview
-  reminderOverview: (kidId: number) => req<ChoreOverviewRow[]>(`/api/admin/kids/${kidId}/reminder-overview`),
+  reminderOverview: (kidId: number, period = 'this-week') =>
+    req<ChoreOverviewRow[]>(`/api/admin/kids/${kidId}/reminder-overview?period=${period}`),
 };

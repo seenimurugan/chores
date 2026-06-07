@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import java.time.OffsetDateTime;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -50,22 +51,39 @@ class ReminderOverviewControllerTest {
     }
 
     @Test
-    void getOverview_adminUser_returnsRows() throws Exception {
+    void getOverview_adminUser_defaultPeriod_returnsRows() throws Exception {
         OffsetDateTime lastReminder = OffsetDateTime.parse("2024-01-07T09:30:00+00:00");
         ReminderOverviewService.ChoreOverviewRow row = new ReminderOverviewService.ChoreOverviewRow(
-                10L, "Science video", 2, 1, "AT_RISK", 3, lastReminder);
+                10L, "Science video", "🔬", 2, 1, "AT_RISK", 1, 3, lastReminder);
 
-        when(overviewService.getOverviewForKid(42L)).thenReturn(List.of(row));
+        when(overviewService.getOverviewForKid(42L, "this-week")).thenReturn(List.of(row));
 
         mvc.perform(get("/api/admin/kids/42/reminder-overview").with(adminUser()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].choreId").value(10))
                 .andExpect(jsonPath("$[0].choreTitle").value("Science video"))
+                .andExpect(jsonPath("$[0].icon").value("🔬"))
                 .andExpect(jsonPath("$[0].weeklyTarget").value(2))
                 .andExpect(jsonPath("$[0].doneThisWeek").value(1))
                 .andExpect(jsonPath("$[0].status").value("AT_RISK"))
-                .andExpect(jsonPath("$[0].remindersSentThisWeek").value(3))
-                .andExpect(jsonPath("$[0].lastReminderAt").isNotEmpty());
+                .andExpect(jsonPath("$[0].completionsInPeriod").value(1))
+                .andExpect(jsonPath("$[0].remindersSentInPeriod").value(3))
+                .andExpect(jsonPath("$[0].lastReminderInPeriod").isNotEmpty());
+    }
+
+    @Test
+    void getOverview_withPeriodParam_passedToService() throws Exception {
+        ReminderOverviewService.ChoreOverviewRow row = new ReminderOverviewService.ChoreOverviewRow(
+                10L, "Reading", "📖", 3, 0, "ON_TRACK", 12, 0, null);
+
+        when(overviewService.getOverviewForKid(42L, "last-month")).thenReturn(List.of(row));
+
+        mvc.perform(get("/api/admin/kids/42/reminder-overview?period=last-month").with(adminUser()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].choreId").value(10))
+                .andExpect(jsonPath("$[0].completionsInPeriod").value(12))
+                .andExpect(jsonPath("$[0].remindersSentInPeriod").value(0))
+                .andExpect(jsonPath("$[0].lastReminderInPeriod").isEmpty());
     }
 
     @Test
@@ -76,7 +94,7 @@ class ReminderOverviewControllerTest {
 
     @Test
     void getOverview_emptyList_returnsEmptyArray() throws Exception {
-        when(overviewService.getOverviewForKid(99L)).thenReturn(List.of());
+        when(overviewService.getOverviewForKid(eq(99L), eq("this-week"))).thenReturn(List.of());
 
         mvc.perform(get("/api/admin/kids/99/reminder-overview").with(adminUser()))
                 .andExpect(status().isOk())

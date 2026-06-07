@@ -83,11 +83,16 @@ class ReminderOverviewServiceTest {
     }
 
     private Task task(Long id, String title, Integer weeklyTarget, int leadDays) {
+        return task(id, title, weeklyTarget, leadDays, null);
+    }
+
+    private Task task(Long id, String title, Integer weeklyTarget, int leadDays, String icon) {
         Task t = new Task();
         t.setId(id);
         t.setTitle(title);
         t.setWeeklyTarget(weeklyTarget);
         t.setRemindLeadDays(leadDays);
+        t.setIcon(icon);
         t.setRecurrence(Task.Recurrence.DAILY);
         t.setPoints(1);
         t.setActive(true);
@@ -113,17 +118,17 @@ class ReminderOverviewServiceTest {
     /**
      * Mix of on-track, at-risk, never-reminded chores.
      * Sunday: D=1.
-     *   chore1: T=2, C=2 → remaining=0 → ON_TRACK
-     *   chore2: T=1, C=0 → remaining=1, D=1 ≤ 1+0 → AT_RISK; 3 reminders sent, lastReminder not null
-     *   chore3: T=2, C=0 → remaining=2, D=1 ≤ 2+0 → AT_RISK; 0 reminders, lastReminder null
+     *   chore1: T=2, C=2 → remaining=0 → ON_TRACK; icon=📖
+     *   chore2: T=1, C=0 → remaining=1, D=1 ≤ 1+0 → AT_RISK; 3 reminders sent, lastReminder not null; icon=🔬
+     *   chore3: T=2, C=0 → remaining=2, D=1 ≤ 2+0 → AT_RISK; 0 reminders, lastReminder null; icon=null
      *   chore4: weekly_target=null → excluded
      */
     @Test
     void mixedChores_correctStatusCountsAndLastReminder() {
         User kid = kid(1L, "Europe/London");
-        Task chore1 = task(10L, "Reading", 2, 0);
-        Task chore2 = task(11L, "Science", 1, 0);
-        Task chore3 = task(12L, "Exercise", 2, 0);
+        Task chore1 = task(10L, "Reading", 2, 0, "📖");
+        Task chore2 = task(11L, "Science", 1, 0, "🔬");
+        Task chore3 = task(12L, "Exercise", 2, 0, null);
         Task chore4 = task(13L, "Free play", null, 0);
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(kid));
@@ -131,7 +136,8 @@ class ReminderOverviewServiceTest {
                 assignment(chore1, kid), assignment(chore2, kid),
                 assignment(chore3, kid), assignment(chore4, kid)));
 
-        // The service queries per-task completions using listForUser (not countDoneByDay).
+        // Service calls listForUser twice: once for current-week (Mon→today) and once for the period window.
+        // With period=this-week both calls get the same date range [MONDAY, SUNDAY].
         when(completionRepository.listForUser(eq(1L), eq(MONDAY), eq(SUNDAY)))
                 .thenReturn(List.of(
                         completionRow(MONDAY, 1L, 10L),
@@ -154,30 +160,35 @@ class ReminderOverviewServiceTest {
         when(logRepository.findMaxSentAtByUserIdAndTaskIdAndSentAtBetween(eq(1L), eq(12L), any(), any()))
                 .thenReturn(Optional.empty());
 
-        List<ReminderOverviewService.ChoreOverviewRow> rows = service.getOverviewForKid(1L);
+        List<ReminderOverviewService.ChoreOverviewRow> rows = service.getOverviewForKid(1L, "this-week");
 
         // Only 3 chores with weekly_target (chore4 excluded)
         assertThat(rows).hasSize(3);
 
         ReminderOverviewService.ChoreOverviewRow r1 = rows.stream().filter(r -> r.choreId() == 10L).findFirst().orElseThrow();
         assertThat(r1.choreTitle()).isEqualTo("Reading");
+        assertThat(r1.icon()).isEqualTo("📖");
         assertThat(r1.weeklyTarget()).isEqualTo(2);
         assertThat(r1.doneThisWeek()).isEqualTo(2);
         assertThat(r1.status()).isEqualTo("ON_TRACK");
-        assertThat(r1.remindersSentThisWeek()).isEqualTo(0);
-        assertThat(r1.lastReminderAt()).isNull();
+        assertThat(r1.completionsInPeriod()).isEqualTo(2);
+        assertThat(r1.remindersSentInPeriod()).isEqualTo(0);
+        assertThat(r1.lastReminderInPeriod()).isNull();
 
         ReminderOverviewService.ChoreOverviewRow r2 = rows.stream().filter(r -> r.choreId() == 11L).findFirst().orElseThrow();
         assertThat(r2.choreTitle()).isEqualTo("Science");
+        assertThat(r2.icon()).isEqualTo("🔬");
         assertThat(r2.doneThisWeek()).isEqualTo(0);
         assertThat(r2.status()).isEqualTo("AT_RISK");
-        assertThat(r2.remindersSentThisWeek()).isEqualTo(3);
-        assertThat(r2.lastReminderAt()).isEqualTo(lastReminderAt);
+        assertThat(r2.completionsInPeriod()).isEqualTo(0);
+        assertThat(r2.remindersSentInPeriod()).isEqualTo(3);
+        assertThat(r2.lastReminderInPeriod()).isEqualTo(lastReminderAt);
 
         ReminderOverviewService.ChoreOverviewRow r3 = rows.stream().filter(r -> r.choreId() == 12L).findFirst().orElseThrow();
+        assertThat(r3.icon()).isNull();
         assertThat(r3.status()).isEqualTo("AT_RISK");
-        assertThat(r3.remindersSentThisWeek()).isEqualTo(0);
-        assertThat(r3.lastReminderAt()).isNull();
+        assertThat(r3.remindersSentInPeriod()).isEqualTo(0);
+        assertThat(r3.lastReminderInPeriod()).isNull();
     }
 
     /**

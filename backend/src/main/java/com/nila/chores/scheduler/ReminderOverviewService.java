@@ -15,24 +15,30 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Clock;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
  * Computes the per-kid, per-chore reminder overview for the admin dashboard.
  *
  * For each assigned chore with a {@code weekly_target}, returns:
- *   - choreId, choreTitle, weeklyTarget
- *   - doneThisWeek (count of done=true completions in current ISO week)
- *   - status (ON_TRACK | AT_RISK) — reuses AtRiskCalculator
- *   - remindersSentThisWeek (count of SENT notification_log rows for this kid+chore this week)
- *   - lastReminderAt (max sentAt, or null if never reminded)
+ *   - choreId, choreTitle, icon, weeklyTarget
+ *   - completionsInPeriod — count of done=true completions in the selected period range
+ *   - remindersSentInPeriod — count of SENT notification_log rows for kid+task in the period
+ *   - lastReminderInPeriod — max sentAt in the period, or null
+ *   - doneThisWeek — always live current-week count (regardless of selected period)
+ *   - status — always live current-week ON_TRACK / AT_RISK
+ *
+ * The {@code period} parameter controls the audit window:
+ *   this-week | last-week | this-month | last-month | this-year | last-year
+ * Default is {@code this-week}.
  *
  * Clock is injected for testability.
  */
@@ -63,16 +69,20 @@ public class ReminderOverviewService {
     }
 
     /**
-     * Returns the reminder overview for a kid. Only chores with a {@code weekly_target}
-     * are included.
+     * Returns the reminder overview for a kid. Only chores with a {@code weekly_target} are included.
      *
-     * @param kidId the kid's user ID
+     * <p>Always returns live current-week status (ON_TRACK / AT_RISK) and doneThisWeek.
+     * Period-scoped audit columns (completionsInPeriod, remindersSentInPeriod, lastReminderInPeriod)
+     * are bounded by the requested {@code period}.</p>
+     *
+     * @param kidId  the kid's user ID
+     * @param period one of: this-week, last-week, this-month, last-month, this-year, last-year
      * @return list of per-chore overview rows, ordered by chore title
      * @throws ResponseStatusException 404 if the kid is not found
      */
     @Transactional(readOnly = true)
-    public List<ChoreOverviewRow> getOverviewForKid(Long kidId) {
-        log.info("event=reminder-overview.request kidId={}", kidId);
+    public List<ChoreOverviewRow> getOverviewForKid(Long kidId, String period) {
+        log.info("event=reminder-overview.request kidId={} period={}", kidId, period);
 
         User kid = userRepository.findById(kidId).orElseThrow(() -> {
             log.warn("event=reminder-overview.kid-not-found kidId={}", kidId);
@@ -81,51 +91,145 @@ public class ReminderOverviewService {
 
         ZoneId kidZone = resolveZone(kid);
         LocalDate today = LocalDate.now(clock.withZone(kidZone));
-        LocalDate weekStart = calculator.mostRecentMonday(today);
+        LocalDate currentWeekStart = calculator.mostRecentMonday(today);
 
-        // Week window anchored in the KID's local timezone (not UTC).
-        // Using the kid's zone ensures the boundary aligns with the kid's local midnight,
-        // so reminders sent at e.g. 01:30 IST are counted in the correct IST calendar week.
-        OffsetDateTime weekStartUtc = weekStart.atStartOfDay(kidZone).toOffsetDateTime();
-        OffsetDateTime weekEndUtc = today.plusDays(1).atStartOfDay(kidZone).toOffsetDateTime();
+        // Current-week live window (always used for status + doneThisWeek)
+        OffsetDateTime currentWeekStartUtc = currentWeekStart.atStartOfDay(kidZone).toOffsetDateTime();
+        OffsetDateTime currentWeekEndUtc = today.plusDays(1).atStartOfDay(kidZone).toOffsetDateTime();
 
-        log.debug("event=reminder-overview.week-window kidId={} kidZone={} weekStartUtc={} weekEndUtc={}",
-                kidId, kidZone, weekStartUtc, weekEndUtc);
+        // Period-scoped audit window
+        PeriodRange periodRange = resolvePeriodRange(period, kidZone, clock);
+        OffsetDateTime periodStartUtc = periodRange.start().atStartOfDay(kidZone).toOffsetDateTime();
+        OffsetDateTime periodEndUtc = periodRange.end().plusDays(1).atStartOfDay(kidZone).toOffsetDateTime();
+
+        log.debug(
+            "event=reminder-overview.windows kidId={} kidZone={} period={} " +
+            "periodStart={} periodEnd={} currentWeekStart={} currentWeekEnd={}",
+            kidId, kidZone, period, periodStartUtc, periodEndUtc,
+            currentWeekStartUtc, currentWeekEndUtc);
 
         List<TaskAssignment> assignments = assignmentRepository.findActiveForUser(kidId);
         log.info("event=reminder-overview.assignments kidId={} count={}", kidId, assignments.size());
 
-        // Load all completions for this kid this week (one query, then group by taskId)
-        List<CompletionRow> allCompletions = completionRepository.listForUser(kidId, weekStart, today);
-        Map<Long, Long> doneByTask = allCompletions.stream()
+        // Current-week completions (for live status)
+        List<CompletionRow> currentWeekCompletions =
+                completionRepository.listForUser(kidId, currentWeekStart, today);
+        Map<Long, Long> doneThisWeekByTask = currentWeekCompletions.stream()
+                .collect(Collectors.groupingBy(CompletionRow::getTaskId, Collectors.counting()));
+
+        // Period-scoped completions (for audit column)
+        List<CompletionRow> periodCompletions =
+                completionRepository.listForUser(kidId, periodRange.start(), periodRange.end());
+        Map<Long, Long> doneInPeriodByTask = periodCompletions.stream()
                 .collect(Collectors.groupingBy(CompletionRow::getTaskId, Collectors.counting()));
 
         List<ChoreOverviewRow> rows = assignments.stream()
                 .map(TaskAssignment::getTask)
                 .filter(task -> task.getWeeklyTarget() != null)
                 .map(task -> {
-                    long done = doneByTask.getOrDefault(task.getId(), 0L);
-                    boolean atRisk = calculator.isAtRisk(task.getWeeklyTarget(), task.getRemindLeadDays(), (int) done, today);
+                    // Live current-week status
+                    int doneThisWeek = doneThisWeekByTask.getOrDefault(task.getId(), 0L).intValue();
+                    boolean atRisk = calculator.isAtRisk(
+                            task.getWeeklyTarget(), task.getRemindLeadDays(), doneThisWeek, today);
                     String status = atRisk ? "AT_RISK" : "ON_TRACK";
 
-                    long reminderCount = logRepository.countByUserIdAndTaskIdAndSentAtBetween(
-                            kidId, task.getId(), weekStartUtc, weekEndUtc);
-                    Optional<OffsetDateTime> lastReminder = logRepository.findMaxSentAtByUserIdAndTaskIdAndSentAtBetween(
-                            kidId, task.getId(), weekStartUtc, weekEndUtc);
+                    // Period-scoped audit
+                    int completionsInPeriod = doneInPeriodByTask.getOrDefault(task.getId(), 0L).intValue();
+                    long remindersSentInPeriod = logRepository.countByUserIdAndTaskIdAndSentAtBetween(
+                            kidId, task.getId(), periodStartUtc, periodEndUtc);
+                    Optional<OffsetDateTime> lastReminderInPeriod =
+                            logRepository.findMaxSentAtByUserIdAndTaskIdAndSentAtBetween(
+                                    kidId, task.getId(), periodStartUtc, periodEndUtc);
 
-                    log.info("event=reminder-overview.chore kidId={} taskId={} taskTitle={} done={} target={} status={} remindersSent={}",
-                            kidId, task.getId(), task.getTitle(), done, task.getWeeklyTarget(), status, reminderCount);
+                    log.info(
+                        "event=reminder-overview.chore kidId={} taskId={} taskTitle={} icon={} " +
+                        "doneThisWeek={} target={} status={} " +
+                        "completionsInPeriod={} remindersSentInPeriod={} period={}",
+                        kidId, task.getId(), task.getTitle(), task.getIcon(),
+                        doneThisWeek, task.getWeeklyTarget(), status,
+                        completionsInPeriod, remindersSentInPeriod, period);
 
                     return new ChoreOverviewRow(
-                            task.getId(), task.getTitle(), task.getWeeklyTarget(),
-                            (int) done, status, (int) reminderCount,
-                            lastReminder.orElse(null));
+                            task.getId(),
+                            task.getTitle(),
+                            task.getIcon(),
+                            task.getWeeklyTarget(),
+                            doneThisWeek,
+                            status,
+                            completionsInPeriod,
+                            (int) remindersSentInPeriod,
+                            lastReminderInPeriod.orElse(null));
                 })
                 .sorted(java.util.Comparator.comparing(ChoreOverviewRow::choreTitle))
                 .toList();
 
-        log.info("event=reminder-overview.complete kidId={} rows={}", kidId, rows.size());
+        log.info("event=reminder-overview.complete kidId={} period={} rows={}", kidId, period, rows.size());
         return rows;
+    }
+
+    /**
+     * Convenience overload defaulting to {@code this-week}.
+     * Retained for backward compatibility with existing tests.
+     */
+    @Transactional(readOnly = true)
+    public List<ChoreOverviewRow> getOverviewForKid(Long kidId) {
+        return getOverviewForKid(kidId, "this-week");
+    }
+
+    // ── Period range resolution ───────────────────────────────────────────────
+
+    /**
+     * Resolves the named period to a [start, end] LocalDate range (both inclusive),
+     * anchored in the given timezone.
+     *
+     * <p>Week boundaries are Monday–Sunday (ISO 8601).</p>
+     *
+     * <p>Exposed as {@code static} so tests can call it directly without wiring
+     * the full service graph.</p>
+     *
+     * @param period  one of: this-week, last-week, this-month, last-month, this-year, last-year
+     * @param zone    the timezone to anchor date calculations
+     * @param clock   the clock to compute "today"
+     * @return a PeriodRange with start ≤ end
+     */
+    public static PeriodRange resolvePeriodRange(String period, ZoneId zone, Clock clock) {
+        LocalDate today = LocalDate.now(clock.withZone(zone));
+
+        return switch (period) {
+            case "last-week" -> {
+                LocalDate thisWeekMonday = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+                LocalDate lastWeekMonday = thisWeekMonday.minusWeeks(1);
+                LocalDate lastWeekSunday = thisWeekMonday.minusDays(1);
+                yield new PeriodRange(lastWeekMonday, lastWeekSunday);
+            }
+            case "this-month" -> {
+                LocalDate firstOfMonth = today.withDayOfMonth(1);
+                yield new PeriodRange(firstOfMonth, today);
+            }
+            case "last-month" -> {
+                LocalDate firstOfThisMonth = today.withDayOfMonth(1);
+                LocalDate lastDayOfLastMonth = firstOfThisMonth.minusDays(1);
+                LocalDate firstOfLastMonth = lastDayOfLastMonth.withDayOfMonth(1);
+                yield new PeriodRange(firstOfLastMonth, lastDayOfLastMonth);
+            }
+            case "this-year" -> {
+                LocalDate jan1 = today.withDayOfYear(1);
+                yield new PeriodRange(jan1, today);
+            }
+            case "last-year" -> {
+                LocalDate jan1LastYear = today.minusYears(1).withDayOfYear(1);
+                LocalDate dec31LastYear = jan1LastYear.withMonth(12).withDayOfMonth(31);
+                yield new PeriodRange(jan1LastYear, dec31LastYear);
+            }
+            default -> {
+                // "this-week" and any unrecognised value → current Mon–today
+                if (!"this-week".equals(period)) {
+                    log.warn("event=reminder-overview.unknown-period period={} defaulting=this-week", period);
+                }
+                LocalDate monday = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+                yield new PeriodRange(monday, today);
+            }
+        };
     }
 
     private ZoneId resolveZone(User kid) {
@@ -143,24 +247,38 @@ public class ReminderOverviewService {
         }
     }
 
+    // ── Records ──────────────────────────────────────────────────────────────
+
+    /**
+     * Inclusive date range for a named reporting period.
+     *
+     * @param start first day (inclusive)
+     * @param end   last day (inclusive)
+     */
+    public record PeriodRange(LocalDate start, LocalDate end) {}
+
     /**
      * Per-chore row for the reminder overview endpoint.
      *
-     * @param choreId              task ID
-     * @param choreTitle           task title
-     * @param weeklyTarget         required completions per week
-     * @param doneThisWeek         completions done=true in [weekStart..today]
-     * @param status               "ON_TRACK" or "AT_RISK"
-     * @param remindersSentThisWeek count of SENT notification_log rows this week for this kid+chore
-     * @param lastReminderAt       max sentAt this week, or null
+     * @param choreId               task ID
+     * @param choreTitle            task title
+     * @param icon                  task icon emoji/string, or null
+     * @param weeklyTarget          required completions per week
+     * @param doneThisWeek          live: completions done=true in current Mon–today
+     * @param status                live: "ON_TRACK" or "AT_RISK" for current week
+     * @param completionsInPeriod   count of done=true completions in selected period
+     * @param remindersSentInPeriod count of SENT notification_log rows in selected period
+     * @param lastReminderInPeriod  max sentAt in selected period, or null
      */
     public record ChoreOverviewRow(
             Long choreId,
             String choreTitle,
+            String icon,
             int weeklyTarget,
             int doneThisWeek,
             String status,
-            int remindersSentThisWeek,
-            OffsetDateTime lastReminderAt
+            int completionsInPeriod,
+            int remindersSentInPeriod,
+            OffsetDateTime lastReminderInPeriod
     ) {}
 }
