@@ -9,9 +9,19 @@ import java.util.Optional;
 public interface NotificationLogRepository extends JpaRepository<NotificationLog, Long> {
 
     /**
-     * Dedup check: has a SENT row already been written for this (kid, task, channel) today?
-     * Used by the at-risk scheduler to avoid re-sending on repeat ticks.
+     * Dedup check: has a SENT (not FAILED) row already been written for this
+     * (kid, task, channel) within the given time window?
+     *
+     * Filters {@code status = 'SENT'} so that a prior FAILED send does NOT block
+     * a retry — only a successful send deduplicates.
      */
+    @Query("""
+        select count(n) > 0 from NotificationLog n
+        where n.user.id = :userId and n.task.id = :taskId
+          and n.channel = :channel
+          and n.sentAt between :from and :to
+          and n.status = 'SENT'
+    """)
     boolean existsByUserIdAndTaskIdAndChannelAndSentAtBetween(
             Long userId, Long taskId, String channel,
             OffsetDateTime from, OffsetDateTime to);

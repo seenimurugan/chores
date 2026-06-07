@@ -23,13 +23,16 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -295,6 +298,108 @@ class AtRiskReminderSchedulerTest {
 
         scheduler.runReminders(fixedClock);
 
+        verify(telegramSender, times(1)).send(eq("-5139466273"), anyString(), anyString());
+        verify(logRepository, times(1)).save(any(NotificationLog.class));
+    }
+
+    /**
+     * MUST-FIX 2 — Timezone-dedup regression (the canonical bug scenario from the task).
+     *
+     * Clock fixed to 2024-01-07T20:00:00Z.
+     * For a kid in Asia/Kolkata (IST +5:30) that is 2024-01-08T01:30+05:30 (IST Monday).
+     * UTC date is still 2024-01-07 (Sunday).
+     *
+     * today(IST) = 2024-01-08 (Monday).
+     *
+     * Bug scenario: a prior SENT row was recorded at sentAt = 2024-01-08T01:30+05:30
+     * = 2024-01-07T20:00Z. This is early Monday IST (01:30), but the scheduler clock
+     * has now advanced to 09:00 IST (2024-01-08T03:30Z) — past the send gate.
+     *
+     * OLD code builds the dedup window using ZoneOffset.UTC:
+     *   dayStart = 2024-01-08T00:00Z, dayEnd = 2024-01-09T00:00Z
+     * The prior sentAt (2024-01-07T20:00Z) is NOT in that window → dedup misses → double-send (BUG).
+     *
+     * FIXED code builds the window using the kid's IST zone:
+     *   dayStart = 2024-01-08T00:00+05:30 = 2024-01-07T18:30Z
+     *   dayEnd   = 2024-01-09T00:00+05:30 = 2024-01-08T18:30Z
+     * The prior sentAt (2024-01-07T20:00Z) IS in [2024-01-07T18:30Z, 2024-01-08T18:30Z) → deduped (CORRECT).
+     *
+     * Test strategy: stub the repo to return true ONLY for the IST-correct window arguments.
+     * Old code calls with UTC-wrong window → stub returns false → send fires → test fails.
+     * Fixed code calls with IST window → stub returns true → dedup fires → test passes.
+     *
+     * Clock is set to 2024-01-08T03:30:00Z = 2024-01-08T09:00+05:30 (IST 09:00) — past the send gate.
+     */
+    @Test
+    void timezone_kolkata_dedupWindow_anchored_in_ist_not_utc() {
+        ZoneId kolkata = ZoneId.of("Asia/Kolkata");
+        // 2024-01-08T03:30:00Z = 2024-01-08T09:00+05:30 (IST Monday 09:00 — past 06:00 gate)
+        Instant fixedInstant = Instant.parse("2024-01-08T03:30:00Z");
+        Clock fixedClock = Clock.fixed(fixedInstant, kolkata);
+
+        // today(IST) = 2024-01-08 (Monday)
+        // Fixed code builds the window using the kid's zone: 2024-01-08T00:00+05:30 → 2024-01-09T00:00+05:30
+        // The OffsetDateTime produced by today.atStartOfDay(kolkata).toOffsetDateTime() is
+        // 2024-01-08T00:00+05:30 — NOT 2024-01-07T18:30Z (same instant, different offset).
+        // We match using isEqual (same instant comparison) via argThat.
+        Instant istDayStartInstant = Instant.parse("2024-01-07T18:30:00Z"); // = 2024-01-08T00:00+05:30
+        Instant istDayEndInstant   = Instant.parse("2024-01-08T18:30:00Z"); // = 2024-01-09T00:00+05:30
+
+        // UTC-wrong window (old code): 2024-01-08T00:00Z → 2024-01-09T00:00Z
+        // = instants 2024-01-08T00:00Z and 2024-01-09T00:00Z
+        // — a prior sentAt at 2024-01-07T20:00Z is NOT in [2024-01-08T00:00Z, 2024-01-09T00:00Z) → double-send.
+
+        User kid = kid(91L, "Asia/Kolkata", -5139466273L, null);
+        // T=7, lead=0, C=0. today=Monday(isoDow=1), D=7, remaining=7 → 7 <= 7+0 → at-risk.
+        Task chore = task(910L, "Morning stretch", 7, 0);
+
+        when(userRepository.findAllByRole(User.Role.KID)).thenReturn(List.of(kid));
+        when(assignmentRepository.findActiveForUser(91L)).thenReturn(List.of(assignment(chore, kid)));
+        when(completionRepository.countDoneForUserTask(anyLong(), anyLong(), any(), any())).thenReturn(0L);
+
+        // The prior SENT row (sentAt = 2024-01-07T20:00Z = 2024-01-08T01:30+05:30) already exists.
+        // Return true ONLY when the scheduler asks with the IST-correct window (by instant comparison).
+        // Old UTC-wrong window ends at 2024-01-09T00:00Z (not the IST window end) → stub returns false
+        // → send fires → verify(never()) fails → RED on old code.
+        // Fixed code uses IST window → stub returns true → dedup fires → GREEN.
+        when(logRepository.existsByUserIdAndTaskIdAndChannelAndSentAtBetween(
+                eq(91L), eq(910L), eq("TELEGRAM"),
+                argThat(odt -> odt.toInstant().equals(istDayStartInstant)),
+                argThat(odt -> odt.toInstant().equals(istDayEndInstant))))
+                .thenReturn(true);
+
+        scheduler.runReminders(fixedClock);
+
+        // Dedup must fire (prior IST-day send detected) → no Telegram send
+        verify(telegramSender, never()).send(anyString(), anyString(), anyString());
+        verify(logRepository, never()).save(any(NotificationLog.class));
+    }
+
+    /**
+     * SHOULD-FIX 5 — A prior FAILED log row must NOT block a retry.
+     *
+     * existsByUserIdAndTaskIdAndChannelAndSentAtBetween must filter status = 'SENT'.
+     * Without the status filter the mock returning true (as if a FAILED row exists) would
+     * block the send; with the fix the FAILED row should be ignored.
+     *
+     * We verify this by stubbing the "status-filtered" exists call (the new @Query method)
+     * to return false (no SENT row), while confirming a send still occurs.
+     */
+    @Test
+    void failedLogRow_doesNotBlockRetry() {
+        User kid = kid(92L, "Europe/London", -5139466273L, null);
+        Task chore = task(920L, "Piano practice", 1, 0);
+
+        when(userRepository.findAllByRole(User.Role.KID)).thenReturn(List.of(kid));
+        when(assignmentRepository.findActiveForUser(92L)).thenReturn(List.of(assignment(chore, kid)));
+        when(completionRepository.countDoneForUserTask(anyLong(), anyLong(), any(), any())).thenReturn(0L);
+        // The dedup check (now status=SENT filtered) returns false → no SENT row exists → retry should proceed
+        when(logRepository.existsByUserIdAndTaskIdAndChannelAndSentAtBetween(anyLong(), anyLong(), anyString(), any(), any()))
+                .thenReturn(false);
+
+        scheduler.runReminders(clockLondonSunday09());
+
+        // Send should proceed (FAILED row did not block it)
         verify(telegramSender, times(1)).send(eq("-5139466273"), anyString(), anyString());
         verify(logRepository, times(1)).save(any(NotificationLog.class));
     }

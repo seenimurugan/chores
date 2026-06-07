@@ -131,12 +131,7 @@ class ReminderOverviewServiceTest {
                 assignment(chore1, kid), assignment(chore2, kid),
                 assignment(chore3, kid), assignment(chore4, kid)));
 
-        // chore1: 2 completions Mon+Tue
-        when(completionRepository.countDoneByDay(eq(1L), eq(MONDAY), eq(SUNDAY)))
-                .thenReturn(List.of()); // will be refined per chore below
-
-        // Actually, the service queries per-task completions using listForUser filtered by taskId
-        // We mock the general call and the service filters by taskId
+        // The service queries per-task completions using listForUser (not countDoneByDay).
         when(completionRepository.listForUser(eq(1L), eq(MONDAY), eq(SUNDAY)))
                 .thenReturn(List.of(
                         completionRow(MONDAY, 1L, 10L),

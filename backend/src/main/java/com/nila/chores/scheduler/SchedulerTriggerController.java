@@ -26,14 +26,17 @@ public class SchedulerTriggerController {
     private static final Logger log = LoggerFactory.getLogger(SchedulerTriggerController.class);
 
     private final AtRiskReminderScheduler scheduler;
+    private final Clock clock;
 
-    public SchedulerTriggerController(AtRiskReminderScheduler scheduler) {
+    public SchedulerTriggerController(AtRiskReminderScheduler scheduler, Clock clock) {
         this.scheduler = scheduler;
+        this.clock = clock;
     }
 
     /**
      * POST /api/admin/scheduler/run-reminders
-     * Triggers an immediate at-risk reminder run.
+     * Triggers an immediate at-risk reminder run using the scheduler's injected Clock bean
+     * (consistent with the @Scheduled path; avoids Clock.systemDefaultZone() divergence in tests).
      *
      * @param actor authenticated admin
      * @return 200 with a plain status message
@@ -41,7 +44,7 @@ public class SchedulerTriggerController {
     @PostMapping("/run-reminders")
     public ResponseEntity<String> triggerRun(@AuthenticationPrincipal AuthUser actor) {
         log.info("event=admin.scheduler.trigger.request actor={}", actor.id());
-        scheduler.runReminders(Clock.systemDefaultZone());
+        scheduler.runReminders(clock);
         log.info("event=admin.scheduler.trigger.complete actor={}", actor.id());
         return ResponseEntity.ok("Reminder run triggered");
     }

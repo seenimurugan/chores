@@ -23,7 +23,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 
 /**
  * Scheduled at-risk reminder: runs every 15 minutes, evaluates every KID's
@@ -190,9 +189,15 @@ public class AtRiskReminderScheduler {
     }
 
     private int sendIfNotDuped(User kid, Task task, String message, LocalDate today, Clock clock) {
-        // Window = [start-of-today UTC, end-of-today UTC]
-        OffsetDateTime dayStart = today.atStartOfDay(ZoneOffset.UTC).toOffsetDateTime();
-        OffsetDateTime dayEnd = today.plusDays(1).atStartOfDay(ZoneOffset.UTC).toOffsetDateTime();
+        ZoneId kidZone = resolveZone(kid);
+        // Window = [start-of-today in the KID's timezone, start-of-tomorrow in the kid's timezone].
+        // Using the kid's zone (not UTC) ensures the dedup boundary matches the kid's local midnight,
+        // preventing double-sends around the UTC-day rollover for non-UTC kids (e.g. IST +5:30).
+        OffsetDateTime dayStart = today.atStartOfDay(kidZone).toOffsetDateTime();
+        OffsetDateTime dayEnd = today.plusDays(1).atStartOfDay(kidZone).toOffsetDateTime();
+
+        log.debug("event=atrisk-scheduler.dedup.window kidId={} taskId={} kidZone={} dayStart={} dayEnd={}",
+                kid.getId(), task.getId(), kidZone, dayStart, dayEnd);
 
         int sent = 0;
 

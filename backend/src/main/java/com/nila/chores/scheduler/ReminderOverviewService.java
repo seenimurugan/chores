@@ -18,7 +18,6 @@ import java.time.Clock;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -84,9 +83,14 @@ public class ReminderOverviewService {
         LocalDate today = LocalDate.now(clock.withZone(kidZone));
         LocalDate weekStart = calculator.mostRecentMonday(today);
 
-        // Week window in UTC for notification_log queries
-        OffsetDateTime weekStartUtc = weekStart.atStartOfDay(ZoneOffset.UTC).toOffsetDateTime();
-        OffsetDateTime weekEndUtc = today.plusDays(1).atStartOfDay(ZoneOffset.UTC).toOffsetDateTime();
+        // Week window anchored in the KID's local timezone (not UTC).
+        // Using the kid's zone ensures the boundary aligns with the kid's local midnight,
+        // so reminders sent at e.g. 01:30 IST are counted in the correct IST calendar week.
+        OffsetDateTime weekStartUtc = weekStart.atStartOfDay(kidZone).toOffsetDateTime();
+        OffsetDateTime weekEndUtc = today.plusDays(1).atStartOfDay(kidZone).toOffsetDateTime();
+
+        log.debug("event=reminder-overview.week-window kidId={} kidZone={} weekStartUtc={} weekEndUtc={}",
+                kidId, kidZone, weekStartUtc, weekEndUtc);
 
         List<TaskAssignment> assignments = assignmentRepository.findActiveForUser(kidId);
         log.info("event=reminder-overview.assignments kidId={} count={}", kidId, assignments.size());
