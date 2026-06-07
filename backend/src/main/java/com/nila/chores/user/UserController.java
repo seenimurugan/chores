@@ -2,6 +2,8 @@ package com.nila.chores.user;
 
 import com.nila.chores.security.AuthUser;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import org.slf4j.Logger;
@@ -35,8 +37,10 @@ public class UserController {
     @PostMapping
     public ResponseEntity<UserDto> create(@AuthenticationPrincipal AuthUser actor,
                                           @Valid @RequestBody CreateKidRequest req) {
+        log.info("event=admin.users.create actor={} target.username={}", actor.id(), req.username());
         User u = service.createKid(actor.id(), actor.username(),
-                req.username().trim(), req.password(), req.displayName().trim(), req.avatarColor());
+                req.username().trim(), req.password(), req.displayName().trim(), req.avatarColor(),
+                req.email(), req.telegramChatId());
         return ResponseEntity.ok(UserDto.of(u));
     }
 
@@ -52,7 +56,18 @@ public class UserController {
     public ResponseEntity<UserDto> updateEditWindow(@AuthenticationPrincipal AuthUser actor,
                                                     @PathVariable Long id,
                                                     @Valid @RequestBody UpdateEditWindowRequest req) {
+        log.info("event=admin.users.edit-window actor={} target={} value={}", actor.id(), id, req.editWindowDays());
         User u = service.updateEditWindow(actor.id(), id, req.editWindowDays());
+        return ResponseEntity.ok(UserDto.of(u));
+    }
+
+    @PatchMapping("/{id}/contacts")
+    public ResponseEntity<UserDto> updateContacts(@AuthenticationPrincipal AuthUser actor,
+                                                  @PathVariable Long id,
+                                                  @Valid @RequestBody UpdateContactsRequest req) {
+        log.info("event=admin.users.contacts.update actor={} target={} hasEmail={} hasTelegram={}",
+                actor.id(), id, req.email() != null, req.telegramChatId() != null);
+        User u = service.updateContacts(actor.id(), id, req.email(), req.telegramChatId());
         return ResponseEntity.ok(UserDto.of(u));
     }
 
@@ -67,19 +82,28 @@ public class UserController {
             @NotBlank @Size(min = 2, max = 64) String username,
             @NotBlank @Size(min = 4, max = 128) String password,
             @NotBlank @Size(min = 1, max = 128) String displayName,
-            String avatarColor
+            String avatarColor,
+            @Email @Size(max = 255) String email,
+            Long telegramChatId
     ) {}
 
     public record ResetPasswordRequest(@NotBlank @Size(min = 4, max = 128) String password) {}
 
     public record UpdateEditWindowRequest(
-            @jakarta.validation.constraints.Min(0) @jakarta.validation.constraints.Max(365) int editWindowDays
+            @Min(0) @jakarta.validation.constraints.Max(365) int editWindowDays
     ) {}
 
-    public record UserDto(Long id, String username, String displayName, String role, String avatarColor, int editWindowDays) {
+    public record UpdateContactsRequest(
+            @Email @Size(max = 255) String email,
+            Long telegramChatId
+    ) {}
+
+    public record UserDto(Long id, String username, String displayName, String role,
+                          String avatarColor, int editWindowDays,
+                          String email, Long telegramChatId) {
         public static UserDto of(User u) {
             return new UserDto(u.getId(), u.getUsername(), u.getDisplayName(), u.getRole().name(),
-                    u.getAvatarColor(), u.getEditWindowDays());
+                    u.getAvatarColor(), u.getEditWindowDays(), u.getEmail(), u.getTelegramChatId());
         }
     }
 }

@@ -29,6 +29,8 @@ type FormValues = {
   points: number;
   icon: string;
   recurrence: Task['recurrence'];
+  weeklyTarget: string;   // string for controlled input; parsed to number | null on submit
+  remindLeadDays: number;
 };
 
 const EMPTY_FORM: FormValues = {
@@ -37,6 +39,8 @@ const EMPTY_FORM: FormValues = {
   points: 1,
   icon: ICONS_CHORES[0],
   recurrence: 'DAILY',
+  weeklyTarget: '',
+  remindLeadDays: 0,
 };
 
 export default function AdminTasksPage() {
@@ -68,12 +72,14 @@ function Inner() {
   }
 
   async function create(values: FormValues) {
-    await api.createTask(values);
+    const weeklyTarget = values.weeklyTarget.trim() ? Number(values.weeklyTarget.trim()) : null;
+    await api.createTask({ ...values, weeklyTarget, remindLeadDays: values.remindLeadDays });
     reload();
   }
 
   async function save(id: number, values: FormValues) {
-    await api.updateTask(id, values);
+    const weeklyTarget = values.weeklyTarget.trim() ? Number(values.weeklyTarget.trim()) : null;
+    await api.updateTask(id, { ...values, weeklyTarget, remindLeadDays: values.remindLeadDays });
     setEditingId(null);
     reload();
   }
@@ -127,6 +133,8 @@ function Inner() {
                       points: t.points,
                       icon: t.icon ?? ICONS_CHORES[0],
                       recurrence: t.recurrence,
+                      weeklyTarget: t.weeklyTarget != null ? String(t.weeklyTarget) : '',
+                      remindLeadDays: t.remindLeadDays ?? 0,
                     }}
                     submitLabel="Save changes"
                     onSubmit={(v) => save(t.id, v)}
@@ -254,6 +262,29 @@ function TaskForm({
             <option value="WEEKLY">Weekly</option>
             <option value="ONCE">Once</option>
           </select>
+        </label>
+        <label className="block">
+          <span className="text-sm font-medium">Weekly target (times/week)</span>
+          <span className="block text-xs text-slate-500 mb-1">How many completions are expected per week. Leave blank if not tracking.</span>
+          <input
+            type="number"
+            min={1}
+            value={form.weeklyTarget}
+            onChange={(e) => setForm({ ...form, weeklyTarget: e.target.value })}
+            placeholder="e.g. 3"
+            className="mt-1 w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-2"
+          />
+        </label>
+        <label className="block">
+          <span className="text-sm font-medium">Remind me N days early</span>
+          <span className="block text-xs text-slate-500 mb-1">Days before week-end to send an at-risk reminder. 0 = same day only.</span>
+          <input
+            type="number"
+            min={0}
+            value={form.remindLeadDays}
+            onChange={(e) => setForm({ ...form, remindLeadDays: parseInt(e.target.value || '0', 10) })}
+            className="mt-1 w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-2"
+          />
         </label>
         <div className="sm:col-span-2 space-y-2">
           <span className="text-sm font-medium">Icon</span>

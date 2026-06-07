@@ -1,6 +1,7 @@
 package com.nila.chores.user;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -33,6 +34,15 @@ public class User {
 
     @Column(name = "edit_window_days", nullable = false)
     private int editWindowDays = 14;
+
+    /** Optional email address for at-risk reminder notifications. */
+    @Email
+    @Column(nullable = true)
+    private String email;
+
+    /** Optional Telegram chat ID for at-risk reminder notifications. */
+    @Column(name = "telegram_chat_id", nullable = true)
+    private Long telegramChatId;
 
     @Column(name = "created_at", nullable = false, insertable = false, updatable = false)
     private OffsetDateTime createdAt;
