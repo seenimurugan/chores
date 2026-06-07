@@ -62,6 +62,15 @@ export type AdminMatrix = {
   rows: { day: string; userId: number; doneTaskIds: number[] }[];
 };
 
+export type ReminderResult = {
+  kidId: number;
+  kidName: string;
+  channel: string | null;
+  sent: boolean;
+  skipped: boolean;
+  error: string | null;
+};
+
 function token(): string | null {
   if (typeof window === 'undefined') return null;
   return window.localStorage.getItem('chores.token');
@@ -134,6 +143,8 @@ export const api = {
     req<void>(`/api/admin/tasks/${taskId}/assign/${userId}`, { method: 'POST' }),
   unassign: (taskId: number, userId: number) =>
     req<void>(`/api/admin/tasks/${taskId}/assign/${userId}`, { method: 'DELETE' }),
+  sendReminder: (taskId: number) =>
+    req<ReminderResult[]>(`/api/admin/tasks/${taskId}/send-reminder`, { method: 'POST' }),
 
   // Admin — stats
   allKidStats: (days = 14) => req<KidStats[]>(`/api/admin/stats?days=${days}`),
