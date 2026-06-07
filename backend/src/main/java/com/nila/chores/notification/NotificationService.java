@@ -149,14 +149,14 @@ public class NotificationService {
     }
 
     private NotificationLog buildLog(Task task, User kid, String channel, SendResult result, String body) {
-        NotificationLog log = new NotificationLog();
-        log.setTask(task);
-        log.setUser(kid);
-        log.setChannel(channel);
-        log.setStatus(result.ok() ? "SENT" : "FAILED");
-        log.setError(result.ok() ? null : result.error());
-        log.setMessage(body);
-        return log;
+        NotificationLog entry = new NotificationLog();
+        entry.setTask(task);
+        entry.setUser(kid);
+        entry.setChannel(channel);
+        entry.setStatus(result.ok() ? "SENT" : "FAILED");
+        entry.setError(result.ok() ? null : result.error());
+        entry.setMessage(body);
+        return entry;
     }
 
     /**

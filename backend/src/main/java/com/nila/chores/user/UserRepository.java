@@ -9,4 +9,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByUsername(String username);
     boolean existsByUsername(String username);
     List<User> findByRoleOrderByDisplayNameAsc(User.Role role);
+
+    /** Used by the at-risk reminder scheduler to load all KID users for processing. */
+    List<User> findAllByRole(User.Role role);
 }
