@@ -43,6 +43,17 @@ public interface TaskCompletionRepository extends JpaRepository<TaskCompletion, 
     """)
     List<CompletionRow> listForAllKids(LocalDate from, LocalDate to);
 
+    /**
+     * Count done=true completions for a specific (userId, taskId) pair within a date range.
+     * Used by the at-risk scheduler and reminder overview to compute per-chore progress.
+     */
+    @Query("""
+        select count(c) from TaskCompletion c
+        where c.user.id = :userId and c.task.id = :taskId and c.done = true
+          and c.completionDate between :from and :to
+    """)
+    long countDoneForUserTask(Long userId, Long taskId, LocalDate from, LocalDate to);
+
     interface DailyCount {
         LocalDate getDay();
         Long getDone();

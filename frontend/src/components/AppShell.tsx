@@ -37,6 +37,7 @@ export default function AppShell({
     { href: '/admin', label: 'Dashboard' },
     { href: '/admin/users', label: 'Kids' },
     { href: '/admin/tasks', label: 'Tasks' },
+    { href: '/admin/reminders', label: 'Reminders' },
     { href: '/admin/settings', label: 'Settings' },
   ];
   const kidNav = [

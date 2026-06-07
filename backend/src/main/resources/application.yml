@@ -66,6 +66,11 @@ chores:
   telegram:
     # Telegram bot token — mapped from chores-backend-secret key TELEGRAM_BOT_TOKEN.
     bot-token: ${TELEGRAM_BOT_TOKEN:}
+  reminder:
+    # Time of day (kid's local TZ) from which at-risk reminders may be sent. Default: 06:00.
+    send-time: ${CHORES_REMINDER_SEND_TIME:06:00}
+    # How often to check for at-risk chores. Default: 15 minutes = 900000 ms.
+    check-interval-ms: ${CHORES_REMINDER_CHECK_INTERVAL_MS:900000}
 
 logging:
   level:

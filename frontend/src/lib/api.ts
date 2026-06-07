@@ -18,6 +18,7 @@ export type Kid = Me & {
   email: string | null;
   telegramChatId: number | null;
   timezone: string;
+  reminderTime: string; // HH:mm format
 };
 
 export type Task = {
@@ -71,6 +72,18 @@ export type ReminderResult = {
   error: string | null;
 };
 
+export type ChoreOverviewRow = {
+  choreId: number;
+  choreTitle: string;
+  icon: string | null;
+  weeklyTarget: number;
+  doneThisWeek: number;
+  status: 'ON_TRACK' | 'AT_RISK';
+  completionsInPeriod: number;
+  remindersSentInPeriod: number;
+  lastReminderInPeriod: string | null; // ISO offset date-time
+};
+
 function token(): string | null {
   if (typeof window === 'undefined') return null;
   return window.localStorage.getItem('chores.token');
@@ -121,14 +134,14 @@ export const api = {
 
   // Admin — users
   listKids: () => req<Kid[]>('/api/admin/users'),
-  createKid: (b: { username: string; password: string; displayName: string; avatarColor?: string; email?: string; telegramChatId?: number | null; timezone?: string }) =>
+  createKid: (b: { username: string; password: string; displayName: string; avatarColor?: string; email?: string; telegramChatId?: number | null; timezone?: string; reminderTime?: string }) =>
     req<Kid>('/api/admin/users', { method: 'POST', body: JSON.stringify(b) }),
   resetKidPassword: (id: number, password: string) =>
     req<void>(`/api/admin/users/${id}/reset-password`, { method: 'POST', body: JSON.stringify({ password }) }),
   deleteKid: (id: number) => req<void>(`/api/admin/users/${id}`, { method: 'DELETE' }),
   updateKidEditWindow: (id: number, editWindowDays: number) =>
     req<Kid>(`/api/admin/users/${id}/edit-window`, { method: 'PATCH', body: JSON.stringify({ editWindowDays }) }),
-  updateKidContacts: (id: number, b: { email?: string | null; telegramChatId?: number | null; timezone?: string }) =>
+  updateKidContacts: (id: number, b: { email?: string | null; telegramChatId?: number | null; timezone?: string; reminderTime?: string | null }) =>
     req<Kid>(`/api/admin/users/${id}/contacts`, { method: 'PATCH', body: JSON.stringify(b) }),
 
   // Admin — tasks
@@ -149,4 +162,8 @@ export const api = {
   // Admin — stats
   allKidStats: (days = 14) => req<KidStats[]>(`/api/admin/stats?days=${days}`),
   adminMatrix: (days = 14) => req<AdminMatrix>(`/api/admin/stats/matrix?days=${days}`),
+
+  // Admin — reminder overview
+  reminderOverview: (kidId: number, period = 'this-week') =>
+    req<ChoreOverviewRow[]>(`/api/admin/kids/${kidId}/reminder-overview?period=${period}`),
 };

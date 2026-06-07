@@ -42,6 +42,7 @@ const TIMEZONES = [
 ];
 
 const DEFAULT_TIMEZONE = 'Europe/London';
+const DEFAULT_REMINDER_TIME = '06:00';
 
 export default function AdminUsersPage() {
   return (
@@ -59,9 +60,10 @@ type CreateForm = {
   email: string;
   telegramChatId: string;
   timezone: string;
+  reminderTime: string;
 };
 
-type ContactsForm = { email: string; telegramChatId: string; timezone: string };
+type ContactsForm = { email: string; telegramChatId: string; timezone: string; reminderTime: string };
 
 const EMPTY_CREATE: CreateForm = {
   username: '',
@@ -71,6 +73,7 @@ const EMPTY_CREATE: CreateForm = {
   email: '',
   telegramChatId: '',
   timezone: DEFAULT_TIMEZONE,
+  reminderTime: DEFAULT_REMINDER_TIME,
 };
 
 function Inner() {
@@ -81,7 +84,7 @@ function Inner() {
 
   // Which kid's contacts panel is expanded for editing
   const [editingContactsId, setEditingContactsId] = useState<number | null>(null);
-  const [contactsForm, setContactsForm] = useState<ContactsForm>({ email: '', telegramChatId: '', timezone: DEFAULT_TIMEZONE });
+  const [contactsForm, setContactsForm] = useState<ContactsForm>({ email: '', telegramChatId: '', timezone: DEFAULT_TIMEZONE, reminderTime: DEFAULT_REMINDER_TIME });
   const [contactsBusy, setContactsBusy] = useState(false);
   const [contactsError, setContactsError] = useState<string | null>(null);
 
@@ -105,6 +108,7 @@ function Inner() {
         email: form.email.trim() || undefined,
         telegramChatId: chatId ?? undefined,
         timezone: form.timezone || DEFAULT_TIMEZONE,
+        reminderTime: form.reminderTime || DEFAULT_REMINDER_TIME,
       });
       setForm(EMPTY_CREATE);
       reload();
@@ -132,6 +136,7 @@ function Inner() {
       email: k.email ?? '',
       telegramChatId: k.telegramChatId != null ? String(k.telegramChatId) : '',
       timezone: k.timezone ?? DEFAULT_TIMEZONE,
+      reminderTime: k.reminderTime ?? DEFAULT_REMINDER_TIME,
     });
     setContactsError(null);
   }
@@ -145,6 +150,7 @@ function Inner() {
         email: contactsForm.email.trim() || null,
         telegramChatId: chatId,
         timezone: contactsForm.timezone || DEFAULT_TIMEZONE,
+        reminderTime: contactsForm.reminderTime || DEFAULT_REMINDER_TIME,
       });
       setEditingContactsId(null);
       reload();
@@ -198,6 +204,12 @@ function Inner() {
             value={form.timezone}
             onChange={(v) => setForm({ ...form, timezone: v })}
           />
+          <Input
+            label="Reminder time (HH:mm, in kid's timezone)"
+            type="time"
+            value={form.reminderTime}
+            onChange={(v) => setForm({ ...form, reminderTime: v })}
+          />
         </div>
         {error && <div className="text-sm text-red-600">{error}</div>}
         <button disabled={busy} className="rounded-lg bg-brand-500 hover:bg-brand-600 text-white font-semibold py-2 px-4">
@@ -222,6 +234,7 @@ function Inner() {
                     {k.email && <span>Email: {k.email}</span>}
                     {k.telegramChatId && <span>TG: {k.telegramChatId}</span>}
                     <span>TZ: {k.timezone ?? DEFAULT_TIMEZONE}</span>
+                    <span>Reminder: {k.reminderTime ?? DEFAULT_REMINDER_TIME}</span>
                   </div>
                 </div>
                 <button onClick={() => reset(k)} className="text-sm text-slate-600 hover:text-slate-900 dark:hover:text-white">Reset password</button>
@@ -256,6 +269,12 @@ function Inner() {
                       label="Timezone"
                       value={contactsForm.timezone}
                       onChange={(v) => setContactsForm({ ...contactsForm, timezone: v })}
+                    />
+                    <Input
+                      label="Reminder time (HH:mm, in kid's timezone)"
+                      type="time"
+                      value={contactsForm.reminderTime}
+                      onChange={(v) => setContactsForm({ ...contactsForm, reminderTime: v })}
                     />
                   </div>
                   {contactsError && <div className="text-sm text-red-600">{contactsError}</div>}

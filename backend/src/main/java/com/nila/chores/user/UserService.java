@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -33,9 +34,10 @@ public class UserService {
     @Transactional
     public User createKid(Long actorId, String actorUsername,
                           String username, String password, String displayName, String avatarColor,
-                          String email, Long telegramChatId, String timezone) {
-        log.info("event=user.create actor={} target.username={} action=create-kid hasEmail={} hasTelegram={} timezone={}",
-                actorId, username, email != null, telegramChatId != null, timezone);
+                          String email, Long telegramChatId, String timezone, LocalTime reminderTime) {
+        LocalTime effectiveReminderTime = reminderTime != null ? reminderTime : LocalTime.of(6, 0);
+        log.info("event=user.create actor={} target.username={} action=create-kid hasEmail={} hasTelegram={} timezone={} reminderTime={}",
+                actorId, username, email != null, telegramChatId != null, timezone, effectiveReminderTime);
         if (users.existsByUsername(username)) {
             log.warn("event=user.create actor={} target.username={} outcome=fail reason=username-conflict",
                     actorId, username);
@@ -52,9 +54,10 @@ public class UserService {
             if (email != null && !email.isBlank()) u.setEmail(email.trim());
             u.setTelegramChatId(telegramChatId);
             u.setTimezone(timezone);
+            u.setReminderTime(effectiveReminderTime);
             User saved = users.save(u);
-            log.info("event=user.create actor={} target={} target.username={} timezone={} outcome=success",
-                    actorId, saved.getId(), username, timezone);
+            log.info("event=user.create actor={} target={} target.username={} timezone={} reminderTime={} outcome=success",
+                    actorId, saved.getId(), username, timezone, effectiveReminderTime);
             auditService.recordUserCreate(actorId, actorUsername, saved.getId(), "SUCCESS");
             return saved;
         } catch (ResponseStatusException e) {
@@ -68,9 +71,10 @@ public class UserService {
     }
 
     @Transactional
-    public User updateContacts(Long actorId, Long targetUserId, String email, Long telegramChatId, String timezone) {
-        log.info("event=user.contacts.update actor={} target={} hasEmail={} hasTelegram={} timezone={}",
-                actorId, targetUserId, email != null, telegramChatId != null, timezone);
+    public User updateContacts(Long actorId, Long targetUserId, String email, Long telegramChatId,
+                               String timezone, LocalTime reminderTime) {
+        log.info("event=user.contacts.update actor={} target={} hasEmail={} hasTelegram={} timezone={} reminderTime={}",
+                actorId, targetUserId, email != null, telegramChatId != null, timezone, reminderTime);
         User u = users.findById(targetUserId)
                 .orElseThrow(() -> {
                     log.warn("event=user.contacts.update actor={} target={} outcome=fail reason=user-not-found",
@@ -85,7 +89,17 @@ public class UserService {
         u.setEmail(email != null && !email.isBlank() ? email.trim() : null);
         u.setTelegramChatId(telegramChatId);
         u.setTimezone(timezone);
-        log.info("event=user.contacts.update actor={} target={} timezone={} outcome=success", actorId, targetUserId, timezone);
+        // Only update reminderTime when explicitly provided; null = keep existing value
+        if (reminderTime != null) {
+            log.info("event=user.contacts.update actor={} target={} field=reminderTime oldValue={} newValue={}",
+                    actorId, targetUserId, u.getReminderTime(), reminderTime);
+            u.setReminderTime(reminderTime);
+        } else {
+            log.debug("event=user.contacts.update actor={} target={} field=reminderTime outcome=unchanged keepingValue={}",
+                    actorId, targetUserId, u.getReminderTime());
+        }
+        log.info("event=user.contacts.update actor={} target={} timezone={} reminderTime={} outcome=success",
+                actorId, targetUserId, timezone, u.getReminderTime());
         return u;
     }
 
