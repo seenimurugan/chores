@@ -13,7 +13,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeParseException;
 import java.time.zone.ZoneRulesException;
 import java.util.List;
 
@@ -39,11 +41,13 @@ public class UserController {
     @PostMapping
     public ResponseEntity<UserDto> create(@AuthenticationPrincipal AuthUser actor,
                                           @Valid @RequestBody CreateKidRequest req) {
-        log.info("event=admin.users.create actor={} target.username={} timezone={}", actor.id(), req.username(), req.timezone());
+        log.info("event=admin.users.create actor={} target.username={} timezone={} reminderTime={}",
+                actor.id(), req.username(), req.timezone(), req.reminderTime());
         String tz = resolveAndValidateTimezone(req.timezone());
+        LocalTime rt = parseReminderTime(req.reminderTime());
         User u = service.createKid(actor.id(), actor.username(),
                 req.username().trim(), req.password(), req.displayName().trim(), req.avatarColor(),
-                req.email(), req.telegramChatId(), tz);
+                req.email(), req.telegramChatId(), tz, rt);
         return ResponseEntity.ok(UserDto.of(u));
     }
 
@@ -68,10 +72,11 @@ public class UserController {
     public ResponseEntity<UserDto> updateContacts(@AuthenticationPrincipal AuthUser actor,
                                                   @PathVariable Long id,
                                                   @Valid @RequestBody UpdateContactsRequest req) {
-        log.info("event=admin.users.contacts.update actor={} target={} hasEmail={} hasTelegram={} timezone={}",
-                actor.id(), id, req.email() != null, req.telegramChatId() != null, req.timezone());
+        log.info("event=admin.users.contacts.update actor={} target={} hasEmail={} hasTelegram={} timezone={} reminderTime={}",
+                actor.id(), id, req.email() != null, req.telegramChatId() != null, req.timezone(), req.reminderTime());
         String tz = resolveAndValidateTimezone(req.timezone());
-        User u = service.updateContacts(actor.id(), id, req.email(), req.telegramChatId(), tz);
+        LocalTime rt = parseReminderTime(req.reminderTime());
+        User u = service.updateContacts(actor.id(), id, req.email(), req.telegramChatId(), tz, rt);
         return ResponseEntity.ok(UserDto.of(u));
     }
 
@@ -97,6 +102,31 @@ public class UserController {
         }
     }
 
+    /**
+     * Parses an HH:mm reminder-time string into a {@link LocalTime}.
+     * Returns {@code LocalTime.of(6, 0)} when {@code raw} is null or blank (field omitted).
+     * Throws 400 if the string is non-blank but not a valid HH:mm time.
+     *
+     * <p>Note: null from PATCH contacts means "keep existing value" — callers handle that
+     * distinction at the service layer using the sentinel {@code null} return value.
+     */
+    private LocalTime parseReminderTime(String raw) {
+        if (raw == null || raw.isBlank()) {
+            log.debug("event=reminder-time.resolve input=blank outcome=use-existing-or-default");
+            return null; // null = keep existing / use entity default
+        }
+        try {
+            LocalTime t = LocalTime.parse(raw.trim());
+            log.debug("event=reminder-time.resolve input={} outcome=valid time={}", raw, t);
+            return t;
+        } catch (DateTimeParseException e) {
+            log.warn("event=reminder-time.resolve input={} outcome=invalid reason={}", raw, e.getMessage());
+            throw new org.springframework.web.server.ResponseStatusException(
+                    org.springframework.http.HttpStatus.BAD_REQUEST,
+                    "Invalid reminder time (expected HH:mm): " + raw);
+        }
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@AuthenticationPrincipal AuthUser actor,
                                        @PathVariable Long id) {
@@ -111,7 +141,9 @@ public class UserController {
             String avatarColor,
             @Email @Size(max = 255) String email,
             Long telegramChatId,
-            @Size(max = 64) String timezone
+            @Size(max = 64) String timezone,
+            /** HH:mm string — null/blank → default 06:00. */
+            @Size(max = 5) String reminderTime
     ) {}
 
     public record ResetPasswordRequest(@NotBlank @Size(min = 4, max = 128) String password) {}
@@ -123,16 +155,23 @@ public class UserController {
     public record UpdateContactsRequest(
             @Email @Size(max = 255) String email,
             Long telegramChatId,
-            @Size(max = 64) String timezone
+            @Size(max = 64) String timezone,
+            /** HH:mm string — null/blank → keep existing value. */
+            @Size(max = 5) String reminderTime
     ) {}
 
     public record UserDto(Long id, String username, String displayName, String role,
                           String avatarColor, int editWindowDays,
-                          String email, Long telegramChatId, String timezone) {
+                          String email, Long telegramChatId, String timezone,
+                          String reminderTime) {
         public static UserDto of(User u) {
+            // Format as HH:mm (no seconds) for the API contract
+            String rt = u.getReminderTime() != null
+                    ? String.format("%02d:%02d", u.getReminderTime().getHour(), u.getReminderTime().getMinute())
+                    : "06:00";
             return new UserDto(u.getId(), u.getUsername(), u.getDisplayName(), u.getRole().name(),
                     u.getAvatarColor(), u.getEditWindowDays(), u.getEmail(), u.getTelegramChatId(),
-                    u.getTimezone());
+                    u.getTimezone(), rt);
         }
     }
 }

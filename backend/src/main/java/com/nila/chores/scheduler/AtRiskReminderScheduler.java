@@ -46,7 +46,11 @@ public class AtRiskReminderScheduler {
     private final TelegramSender telegramSender;
     private final EmailSender emailSender;
     private final AtRiskCalculator calculator;
-    private final LocalTime sendTime;
+    /**
+     * Global default used only when a kid's {@code reminder_time} is null (legacy fallback).
+     * In practice the DB column is NOT NULL with default 06:00, so this is defence-in-depth.
+     */
+    private final LocalTime globalDefaultSendTime;
     private final Clock clock;
 
     /**
@@ -70,7 +74,9 @@ public class AtRiskReminderScheduler {
     }
 
     /**
-     * Package-visible constructor for tests — allows injecting a fixed Clock and send-time directly.
+     * Package-visible constructor for tests — allows injecting a fixed Clock directly.
+     * globalDefaultSendTime is set to 06:00 (matches DB column default); per-kid
+     * time is read from {@link com.nila.chores.user.User#getReminderTime()}.
      */
     AtRiskReminderScheduler(
             UserRepository userRepository,
@@ -80,9 +86,9 @@ public class AtRiskReminderScheduler {
             TelegramSender telegramSender,
             EmailSender emailSender,
             AtRiskCalculator calculator,
-            LocalTime sendTime) {
+            LocalTime globalDefaultSendTime) {
         this(userRepository, assignmentRepository, completionRepository, logRepository,
-                telegramSender, emailSender, calculator, sendTime, Clock.systemDefaultZone());
+                telegramSender, emailSender, calculator, globalDefaultSendTime, Clock.systemDefaultZone());
     }
 
     AtRiskReminderScheduler(
@@ -93,7 +99,7 @@ public class AtRiskReminderScheduler {
             TelegramSender telegramSender,
             EmailSender emailSender,
             AtRiskCalculator calculator,
-            LocalTime sendTime,
+            LocalTime globalDefaultSendTime,
             Clock clock) {
         this.userRepository = userRepository;
         this.assignmentRepository = assignmentRepository;
@@ -102,7 +108,7 @@ public class AtRiskReminderScheduler {
         this.telegramSender = telegramSender;
         this.emailSender = emailSender;
         this.calculator = calculator;
-        this.sendTime = sendTime;
+        this.globalDefaultSendTime = globalDefaultSendTime;
         this.clock = clock;
     }
 
@@ -146,13 +152,16 @@ public class AtRiskReminderScheduler {
         LocalDate today = LocalDate.now(clock.withZone(kidZone));
         LocalTime nowLocal = LocalTime.now(clock.withZone(kidZone));
 
-        log.debug("event=atrisk-scheduler.kid.check kidId={} kidName={} timezone={} localDate={} localTime={}",
-                kid.getId(), kid.getDisplayName(), kidZone, today, nowLocal);
+        // Per-kid send-time: use the kid's own reminderTime; fall back to global default if null
+        LocalTime kidSendTime = kid.getReminderTime() != null ? kid.getReminderTime() : globalDefaultSendTime;
 
-        // Send-time gate: don't send before the configured time in the kid's TZ
-        if (nowLocal.isBefore(sendTime)) {
-            log.info("event=atrisk-scheduler.kid.skip-before-send-time kidId={} kidName={} localTime={} sendTime={}",
-                    kid.getId(), kid.getDisplayName(), nowLocal, sendTime);
+        log.debug("event=atrisk-scheduler.kid.check kidId={} kidName={} timezone={} localDate={} localTime={} kidSendTime={}",
+                kid.getId(), kid.getDisplayName(), kidZone, today, nowLocal, kidSendTime);
+
+        // Send-time gate: don't send before this kid's configured reminder time in their TZ
+        if (nowLocal.isBefore(kidSendTime)) {
+            log.info("event=atrisk-scheduler.kid.skip-before-send-time kidId={} kidName={} localTime={} kidSendTime={}",
+                    kid.getId(), kid.getDisplayName(), nowLocal, kidSendTime);
             return 0;
         }
 

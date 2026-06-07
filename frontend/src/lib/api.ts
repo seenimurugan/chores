@@ -18,6 +18,7 @@ export type Kid = Me & {
   email: string | null;
   telegramChatId: number | null;
   timezone: string;
+  reminderTime: string; // HH:mm format
 };
 
 export type Task = {
@@ -133,14 +134,14 @@ export const api = {
 
   // Admin — users
   listKids: () => req<Kid[]>('/api/admin/users'),
-  createKid: (b: { username: string; password: string; displayName: string; avatarColor?: string; email?: string; telegramChatId?: number | null; timezone?: string }) =>
+  createKid: (b: { username: string; password: string; displayName: string; avatarColor?: string; email?: string; telegramChatId?: number | null; timezone?: string; reminderTime?: string }) =>
     req<Kid>('/api/admin/users', { method: 'POST', body: JSON.stringify(b) }),
   resetKidPassword: (id: number, password: string) =>
     req<void>(`/api/admin/users/${id}/reset-password`, { method: 'POST', body: JSON.stringify({ password }) }),
   deleteKid: (id: number) => req<void>(`/api/admin/users/${id}`, { method: 'DELETE' }),
   updateKidEditWindow: (id: number, editWindowDays: number) =>
     req<Kid>(`/api/admin/users/${id}/edit-window`, { method: 'PATCH', body: JSON.stringify({ editWindowDays }) }),
-  updateKidContacts: (id: number, b: { email?: string | null; telegramChatId?: number | null; timezone?: string }) =>
+  updateKidContacts: (id: number, b: { email?: string | null; telegramChatId?: number | null; timezone?: string; reminderTime?: string | null }) =>
     req<Kid>(`/api/admin/users/${id}/contacts`, { method: 'PATCH', body: JSON.stringify(b) }),
 
   // Admin — tasks

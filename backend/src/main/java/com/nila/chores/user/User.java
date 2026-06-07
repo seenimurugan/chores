@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalTime;
 import java.time.OffsetDateTime;
 
 @Entity
@@ -51,6 +52,14 @@ public class User {
      */
     @Column(name = "timezone", nullable = false)
     private String timezone = "Europe/London";
+
+    /**
+     * Per-kid time-of-day at which at-risk reminders are sent (in the kid's own timezone).
+     * Defaults to 06:00 — matching the previous global chores.reminder.send-time default.
+     * Admins can override per kid via the contacts-update endpoint.
+     */
+    @Column(name = "reminder_time", nullable = false)
+    private LocalTime reminderTime = LocalTime.of(6, 0);
 
     @Column(name = "created_at", nullable = false, insertable = false, updatable = false)
     private OffsetDateTime createdAt;

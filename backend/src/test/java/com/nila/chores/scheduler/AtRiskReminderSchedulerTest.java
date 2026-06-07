@@ -425,4 +425,148 @@ class AtRiskReminderSchedulerTest {
         verify(logRepository, times(2)).save(any(NotificationLog.class));
     }
 
+    // ── Per-kid reminderTime tests ─────────────────────────────────────────────
+
+    /** Helper that also sets a custom reminderTime on the kid. */
+    private User kidWithReminderTime(Long id, String tz, Long telegramChatId, String email,
+                                     LocalTime reminderTime) {
+        User u = kid(id, tz, telegramChatId, email);
+        u.setReminderTime(reminderTime);
+        return u;
+    }
+
+    /**
+     * Kid with reminderTime=07:30 fires at 07:30 local — clock at 07:30 is past the gate → sends.
+     */
+    @Test
+    void perKidReminderTime_kidAt0730_clockAt0730_sends() {
+        // Clock: 2024-01-07 (Sunday) 07:30 London — past kid's 07:30 gate
+        Instant instant = SUNDAY_2024_01_07.atTime(7, 30).atZone(LONDON).toInstant();
+        Clock fixedClock = Clock.fixed(instant, LONDON);
+
+        User kid = kidWithReminderTime(100L, "Europe/London", -5139466273L, null,
+                LocalTime.of(7, 30));
+        Task chore = task(100L, "Reading", 1, 0); // T=1, Sunday D=1, remaining=1 → at-risk
+
+        when(userRepository.findAllByRole(User.Role.KID)).thenReturn(List.of(kid));
+        when(assignmentRepository.findActiveForUser(100L)).thenReturn(List.of(assignment(chore, kid)));
+        when(completionRepository.countDoneForUserTask(anyLong(), anyLong(), any(), any())).thenReturn(0L);
+        when(logRepository.existsByUserIdAndTaskIdAndChannelAndSentAtBetween(anyLong(), anyLong(), anyString(), any(), any()))
+                .thenReturn(false);
+
+        scheduler.runReminders(fixedClock);
+
+        verify(telegramSender, times(1)).send(eq("-5139466273"), anyString(), anyString());
+        verify(logRepository, times(1)).save(any(NotificationLog.class));
+    }
+
+    /**
+     * Kid with reminderTime=07:30 — clock at 07:29 is BEFORE the gate → no send.
+     */
+    @Test
+    void perKidReminderTime_kidAt0730_clockAt0729_noSend() {
+        // Clock: 2024-01-07 07:29 London — one minute before 07:30 gate
+        Instant instant = SUNDAY_2024_01_07.atTime(7, 29).atZone(LONDON).toInstant();
+        Clock fixedClock = Clock.fixed(instant, LONDON);
+
+        User kid = kidWithReminderTime(101L, "Europe/London", -5139466273L, null,
+                LocalTime.of(7, 30));
+        Task chore = task(101L, "Exercise", 1, 0);
+
+        when(userRepository.findAllByRole(User.Role.KID)).thenReturn(List.of(kid));
+        when(assignmentRepository.findActiveForUser(101L)).thenReturn(List.of(assignment(chore, kid)));
+
+        scheduler.runReminders(fixedClock);
+
+        verify(telegramSender, never()).send(anyString(), anyString(), anyString());
+    }
+
+    /**
+     * Two kids with DIFFERENT reminderTimes at a clock time between the two gates.
+     * Kid A: reminderTime=06:00 → fires (clock past 06:00).
+     * Kid B: reminderTime=08:00 → skipped (clock before 08:00 at 07:00).
+     */
+    @Test
+    void perKidReminderTime_twoKids_differentTimes_onlyDueKidFires() {
+        // Clock: 2024-01-07 07:00 London — past 06:00 gate but before 08:00 gate
+        Instant instant = SUNDAY_2024_01_07.atTime(7, 0).atZone(LONDON).toInstant();
+        Clock fixedClock = Clock.fixed(instant, LONDON);
+
+        // Kid A: reminderTime=06:00 (past gate → should send)
+        User kidA = kidWithReminderTime(102L, "Europe/London", -5139466273L, null,
+                LocalTime.of(6, 0));
+        Task choreA = task(102L, "Science", 1, 0);
+
+        // Kid B: reminderTime=08:00 (before gate → should NOT send)
+        User kidB = kidWithReminderTime(103L, "Europe/London", -5139466274L, null,
+                LocalTime.of(8, 0));
+        Task choreB = task(103L, "Reading", 1, 0);
+
+        when(userRepository.findAllByRole(User.Role.KID)).thenReturn(List.of(kidA, kidB));
+        when(assignmentRepository.findActiveForUser(102L)).thenReturn(List.of(assignment(choreA, kidA)));
+        when(assignmentRepository.findActiveForUser(103L)).thenReturn(List.of(assignment(choreB, kidB)));
+        when(completionRepository.countDoneForUserTask(anyLong(), anyLong(), any(), any())).thenReturn(0L);
+        when(logRepository.existsByUserIdAndTaskIdAndChannelAndSentAtBetween(anyLong(), anyLong(), anyString(), any(), any()))
+                .thenReturn(false);
+
+        scheduler.runReminders(fixedClock);
+
+        // Kid A fires (06:00 past), Kid B does not (08:00 not yet reached)
+        verify(telegramSender, times(1)).send(eq("-5139466273"), anyString(), anyString());
+        verify(telegramSender, never()).send(eq("-5139466274"), anyString(), anyString());
+        verify(logRepository, times(1)).save(any(NotificationLog.class));
+    }
+
+    /**
+     * Default reminderTime (06:00) fires at 06:00 — mirrors the old global-default behaviour.
+     * Kid's reminderTime field is the JVM/entity default (06:00) — not explicitly set.
+     */
+    @Test
+    void perKidReminderTime_defaultSixAm_firesAt0600() {
+        // Clock: 2024-01-07 06:00 London — exactly at the default 06:00 gate
+        Instant instant = SUNDAY_2024_01_07.atTime(6, 0).atZone(LONDON).toInstant();
+        Clock fixedClock = Clock.fixed(instant, LONDON);
+
+        // kid() does NOT call setReminderTime — entity default (06:00) applies
+        User kid = kid(104L, "Europe/London", -5139466273L, null);
+        Task chore = task(104L, "Piano", 1, 0);
+
+        when(userRepository.findAllByRole(User.Role.KID)).thenReturn(List.of(kid));
+        when(assignmentRepository.findActiveForUser(104L)).thenReturn(List.of(assignment(chore, kid)));
+        when(completionRepository.countDoneForUserTask(anyLong(), anyLong(), any(), any())).thenReturn(0L);
+        when(logRepository.existsByUserIdAndTaskIdAndChannelAndSentAtBetween(anyLong(), anyLong(), anyString(), any(), any()))
+                .thenReturn(false);
+
+        scheduler.runReminders(fixedClock);
+
+        verify(telegramSender, times(1)).send(eq("-5139466273"), anyString(), anyString());
+    }
+
+    /**
+     * Per-kid reminderTime is interpreted in the KID'S TIMEZONE.
+     * Kid in Asia/Kolkata with reminderTime=07:30.
+     * Clock at 02:00 UTC = 07:30 IST → gate passed → sends.
+     */
+    @Test
+    void perKidReminderTime_interpretedInKidTimezone() {
+        ZoneId kolkata = ZoneId.of("Asia/Kolkata");
+        // 2024-01-07T02:00:00Z = 2024-01-07T07:30+05:30 IST (exactly 07:30 gate)
+        Instant instant = Instant.parse("2024-01-07T02:00:00Z");
+        Clock fixedClock = Clock.fixed(instant, kolkata);
+
+        User kid = kidWithReminderTime(105L, "Asia/Kolkata", -5139466273L, null,
+                LocalTime.of(7, 30));
+        Task chore = task(105L, "Homework", 1, 0); // T=1, Sunday IST, D=1 → at-risk
+
+        when(userRepository.findAllByRole(User.Role.KID)).thenReturn(List.of(kid));
+        when(assignmentRepository.findActiveForUser(105L)).thenReturn(List.of(assignment(chore, kid)));
+        when(completionRepository.countDoneForUserTask(anyLong(), anyLong(), any(), any())).thenReturn(0L);
+        when(logRepository.existsByUserIdAndTaskIdAndChannelAndSentAtBetween(anyLong(), anyLong(), anyString(), any(), any()))
+                .thenReturn(false);
+
+        scheduler.runReminders(fixedClock);
+
+        verify(telegramSender, times(1)).send(eq("-5139466273"), anyString(), anyString());
+    }
+
 }
