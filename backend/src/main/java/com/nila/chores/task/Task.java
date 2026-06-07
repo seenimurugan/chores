@@ -33,6 +33,21 @@ public class Task {
     @Column(nullable = false)
     private Boolean active = true;
 
+    /**
+     * How many times per week this task should be completed.
+     * Null means no weekly target is tracked for this task.
+     * Must be > 0 when set.
+     */
+    @Column(name = "weekly_target", nullable = true)
+    private Integer weeklyTarget;
+
+    /**
+     * How many days before the end of the tracking period to send an at-risk reminder.
+     * 0 = only remind on the exact day; default is 0 (strict).
+     */
+    @Column(name = "remind_lead_days", nullable = false)
+    private int remindLeadDays = 0;
+
     @Column(name = "created_at", nullable = false, insertable = false, updatable = false)
     private OffsetDateTime createdAt;
 

@@ -2,6 +2,8 @@ package com.nila.chores.task;
 
 import com.nila.chores.user.User;
 import com.nila.chores.user.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +14,9 @@ import java.util.List;
 
 @Service
 public class TaskService {
+
+    private static final Logger log = LoggerFactory.getLogger(TaskService.class);
+
     private final TaskRepository tasks;
     private final TaskAssignmentRepository assignments;
     private final TaskCompletionRepository completions;
@@ -32,7 +37,9 @@ public class TaskService {
     }
 
     @Transactional
-    public Task create(String title, String description, int points, String icon, Task.Recurrence recurrence) {
+    public Task create(String title, String description, int points, String icon,
+                       Task.Recurrence recurrence, Integer weeklyTarget, int remindLeadDays) {
+        log.info("event=task.create title={} weeklyTarget={} remindLeadDays={}", title, weeklyTarget, remindLeadDays);
         Task t = new Task();
         t.setTitle(title);
         t.setDescription(description);
@@ -40,20 +47,33 @@ public class TaskService {
         t.setIcon(icon);
         t.setRecurrence(recurrence != null ? recurrence : Task.Recurrence.DAILY);
         t.setActive(true);
-        return tasks.save(t);
+        t.setWeeklyTarget(weeklyTarget);
+        t.setRemindLeadDays(remindLeadDays);
+        Task saved = tasks.save(t);
+        log.info("event=task.create taskId={} outcome=success", saved.getId());
+        return saved;
     }
 
     @Transactional
     public Task update(Long id, String title, String description, Integer points, String icon,
-                       Task.Recurrence recurrence, Boolean active) {
+                       Task.Recurrence recurrence, Boolean active, Integer weeklyTarget, Integer remindLeadDays) {
+        log.info("event=task.update taskId={} weeklyTarget={} remindLeadDays={}", id, weeklyTarget, remindLeadDays);
         Task t = tasks.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found"));
+                .orElseThrow(() -> {
+                    log.warn("event=task.update taskId={} outcome=fail reason=not-found", id);
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found");
+                });
         if (title != null) t.setTitle(title);
         if (description != null) t.setDescription(description);
         if (points != null) t.setPoints(points);
         if (icon != null) t.setIcon(icon);
         if (recurrence != null) t.setRecurrence(recurrence);
         if (active != null) t.setActive(active);
+        // weeklyTarget: null in request means "don't change"; to clear it, pass 0 isn't valid so
+        // we use a sentinel: if the field is explicitly in the payload it will be non-null here.
+        if (weeklyTarget != null) t.setWeeklyTarget(weeklyTarget);
+        if (remindLeadDays != null) t.setRemindLeadDays(remindLeadDays);
+        log.info("event=task.update taskId={} outcome=success", id);
         return t;
     }
 

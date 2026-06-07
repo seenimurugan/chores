@@ -32,9 +32,10 @@ public class UserService {
 
     @Transactional
     public User createKid(Long actorId, String actorUsername,
-                          String username, String password, String displayName, String avatarColor) {
-        log.info("event=user.create actor={} target.username={} action=create-kid",
-                actorId, username);
+                          String username, String password, String displayName, String avatarColor,
+                          String email, Long telegramChatId, String timezone) {
+        log.info("event=user.create actor={} target.username={} action=create-kid hasEmail={} hasTelegram={} timezone={}",
+                actorId, username, email != null, telegramChatId != null, timezone);
         if (users.existsByUsername(username)) {
             log.warn("event=user.create actor={} target.username={} outcome=fail reason=username-conflict",
                     actorId, username);
@@ -48,9 +49,12 @@ public class UserService {
             u.setDisplayName(displayName);
             u.setRole(User.Role.KID);
             if (avatarColor != null && !avatarColor.isBlank()) u.setAvatarColor(avatarColor);
+            if (email != null && !email.isBlank()) u.setEmail(email.trim());
+            u.setTelegramChatId(telegramChatId);
+            u.setTimezone(timezone);
             User saved = users.save(u);
-            log.info("event=user.create actor={} target={} target.username={} outcome=success",
-                    actorId, saved.getId(), username);
+            log.info("event=user.create actor={} target={} target.username={} timezone={} outcome=success",
+                    actorId, saved.getId(), username, timezone);
             auditService.recordUserCreate(actorId, actorUsername, saved.getId(), "SUCCESS");
             return saved;
         } catch (ResponseStatusException e) {
@@ -61,6 +65,28 @@ public class UserService {
             auditService.recordUserCreate(actorId, actorUsername, null, "FAIL");
             throw e;
         }
+    }
+
+    @Transactional
+    public User updateContacts(Long actorId, Long targetUserId, String email, Long telegramChatId, String timezone) {
+        log.info("event=user.contacts.update actor={} target={} hasEmail={} hasTelegram={} timezone={}",
+                actorId, targetUserId, email != null, telegramChatId != null, timezone);
+        User u = users.findById(targetUserId)
+                .orElseThrow(() -> {
+                    log.warn("event=user.contacts.update actor={} target={} outcome=fail reason=user-not-found",
+                            actorId, targetUserId);
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+                });
+        if (u.getRole() != User.Role.KID) {
+            log.warn("event=user.contacts.update actor={} target={} target.role={} outcome=fail reason=not-a-kid",
+                    actorId, targetUserId, u.getRole());
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Can only update contacts for kid accounts");
+        }
+        u.setEmail(email != null && !email.isBlank() ? email.trim() : null);
+        u.setTelegramChatId(telegramChatId);
+        u.setTimezone(timezone);
+        log.info("event=user.contacts.update actor={} target={} timezone={} outcome=success", actorId, targetUserId, timezone);
+        return u;
     }
 
     @Transactional
