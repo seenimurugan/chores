@@ -55,25 +55,11 @@ spec:
     - host: seeni-chores
       http:
         paths:
-          - path: /api
-            pathType: Prefix
-            backend:
-              service:
-                name: chores-backend
-                port:
-                  number: 8080
-          - path: /actuator
-            pathType: Prefix
-            backend:
-              service:
-                name: chores-backend
-                port:
-                  number: 8080
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: chores-frontend
+                name: public-inject-proxy
                 port:
                   number: 80
   tls:
