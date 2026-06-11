@@ -10,6 +10,8 @@ kind: Ingress
 metadata:
   name: chores
   namespace: ${NAMESPACE}
+  annotations:
+    tailscale.com/funnel: "true"
 spec:
   ingressClassName: tailscale
   rules:
