@@ -10,16 +10,20 @@ Source: `/Users/nila/Developer/apps/chores/`
 
 ## Access
 
-| Where | URL |
-|---|---|
-| **iPhone / kids / family on Tailscale** | https://chores.stoat-perch.ts.net |
-| **This Mac (browser, localhost)** | http://localhost:3000 *(only when the port-forward is running — see [LAN + localhost access](#lan--localhost-access-optional))* |
-| **LAN devices** (TV, other laptops) | http://192.168.68.57:3000 *(same condition as localhost)* |
-| **Cluster DNS — frontend** (other pods / Mac shell) | http://chores-frontend.homelab.svc.cluster.local |
-| **Cluster DNS — backend API** (curl / Postman) | http://chores-backend.homelab.svc.cluster.local:8080 |
-| **Ad-hoc debug port-forward** | `kubectl -n homelab port-forward svc/chores-frontend 3000:3000` |
+| Where | URL | Visibility |
+|---|---|---|
+| **Public internet (Funnel)** | https://seeni-chores.stoat-perch.ts.net | Public — no Tailscale required; reachable by anyone |
+| **Tailscale tailnet (private)** | https://chores.stoat-perch.ts.net | Private — tailnet only; requires Tailscale client |
+| **This Mac (browser, localhost)** | http://localhost:3000 | Only when port-forward is running — see [LAN + localhost access](#lan--localhost-access-optional) |
+| **LAN devices** (TV, other laptops) | http://192.168.68.57:3000 | Same condition as localhost |
+| **Cluster DNS — frontend** (other pods / Mac shell) | http://chores-frontend.homelab.svc.cluster.local | In-cluster only |
+| **Cluster DNS — backend API** (curl / Postman) | http://chores-backend.homelab.svc.cluster.local:8080 | In-cluster only |
+| **Ad-hoc debug port-forward** | `kubectl -n homelab port-forward svc/chores-frontend 3000:3000` | Mac only |
 
-The HTTPS Tailscale URL is the only one your kids ever need. Everything else is for you when debugging.
+The app has **two separate Tailscale Ingresses**:
+
+- `chores` (Ingress) → `chores.stoat-perch.ts.net` — **tailnet-only, private**. No Funnel annotation. Only devices on the Tailscale network can reach this URL.
+- `seeni-chores` (Ingress) → `seeni-chores.stoat-perch.ts.net` — **public Funnel URL**. Has `tailscale.com/funnel: "true"`. Reachable from the open internet — no Tailscale client needed. Share this URL with family members who are not on the tailnet. The Funnel ACL `nodeAttrs` grant must be enabled in the Tailscale admin console for the `ts-seeni-chores-*` proxy node.
 
 ### LAN + localhost access (optional)
 
@@ -45,9 +49,9 @@ By default the app is only reachable via Tailscale + cluster DNS. To also expose
 | | |
 |---|---|
 | User | `admin` |
-| Password | `admin` |
+| Password | `Ch0635` |
 
-**Change immediately** — see [Maintenance → Rotate admin password](MAINTENANCE.md#rotate-admin-password). The bootstrap admin is only created on first start when no admin exists, so editing the Secret afterwards does nothing — you must update the row in Postgres.
+**Note:** The bootstrap admin (from `CHORES_ADMIN_PASSWORD` in the Secret) is only created on first start when no admin exists. Changing the Secret afterwards does NOT update the password — you must update the `password_hash` column in the `app_user` table in Postgres directly (see [Maintenance → Rotate admin password](MAINTENANCE.md#rotate-admin-password)).
 
 ---
 

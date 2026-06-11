@@ -1,7 +1,8 @@
 # Tailscale ingress with path routing:
 #   /api/* and /actuator/* -> backend
 #   /            (everything else) -> frontend
-# Access:  https://chores.stoat-perch.ts.net
+# Access:  https://chores.stoat-perch.ts.net  (tailnet-ONLY, private)
+#          https://seeni-chores.stoat-perch.ts.net  (Funnel — public internet)
 # Note: this file is processed by envsubst in deploy.sh — ${VAR} placeholders
 # are filled from .env before being piped to kubectl apply.
 ---
@@ -40,3 +41,41 @@ spec:
   tls:
     - hosts:
         - chores
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: seeni-chores
+  namespace: ${NAMESPACE}
+  annotations:
+    tailscale.com/funnel: "true"
+spec:
+  ingressClassName: tailscale
+  rules:
+    - host: seeni-chores
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: chores-backend
+                port:
+                  number: 8080
+          - path: /actuator
+            pathType: Prefix
+            backend:
+              service:
+                name: chores-backend
+                port:
+                  number: 8080
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: chores-frontend
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - seeni-chores
