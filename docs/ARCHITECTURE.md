@@ -31,6 +31,13 @@
                                      └────────────────────────────────┘
 ```
 
+## Public vs private path
+
+On the **PUBLIC** Funnel hostname (`seeni-chores.stoat-perch.ts.net`) traffic passes through
+the `public-inject-proxy` nginx (for Umami analytics injection) before reaching this app.
+The **private tailnet** hostname (`chores.stoat-perch.ts.net`) goes straight to the app
+with no nginx and no tracking.
+
 **On this page:** [Why path-routed Ingress (not subdomain split)](#why-path-routed-ingress-not-subdomain-split) · [Auth](#auth) · [Data model](#data-model) · [Frontend structure](#frontend-structure) · [Backend structure](#backend-structure) · [Deployment shape](#deployment-shape) · [Why these choices](#why-these-choices)
 
 ## Why path-routed Ingress (not subdomain split)

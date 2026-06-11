@@ -25,6 +25,8 @@ The app has **two separate Tailscale Ingresses**:
 - `chores` (Ingress) → `chores.stoat-perch.ts.net` — **tailnet-only, private**. No Funnel annotation. Only devices on the Tailscale network can reach this URL.
 - `seeni-chores` (Ingress) → `seeni-chores.stoat-perch.ts.net` — **public Funnel URL**. Has `tailscale.com/funnel: "true"`. Reachable from the open internet — no Tailscale client needed. Share this URL with family members who are not on the tailnet. The Funnel ACL `nodeAttrs` grant must be enabled in the Tailscale admin console for the `ts-seeni-chores-*` proxy node.
 
+  **Important:** The `seeni-chores` Funnel ingress now routes to `public-inject-proxy` (nginx), NOT directly to `chores-frontend`. The nginx proxy injects Umami analytics (`/_umami/script.js`, website-id `01505d29-3979-4ff8-9637-509f9fcaa369`) and then forwards traffic to the correct backend (`chores-frontend:80` for `/`, `chores-backend:8080` for `/api` and `/actuator`). The private `chores` tailnet ingress is unchanged — it still routes directly to the app with no Umami script. See [public-inject-proxy docs](/Users/nila/Developer/apps/public-inject-proxy/docs/README.md) for architecture.
+
 ### LAN + localhost access (optional)
 
 By default the app is only reachable via Tailscale + cluster DNS. To also expose it on `http://localhost:3000` (from this Mac) and `http://192.168.68.57:3000` (from other LAN devices), wire it into the existing launchd port-forward script:
